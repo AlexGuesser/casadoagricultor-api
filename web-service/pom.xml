@@ -67,6 +67,14 @@
 			<version>2.0.24</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.14.3</version>
+		</dependency>
+
+
 		<!-- Maintaining that for future tests -->
 		<!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
 		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
