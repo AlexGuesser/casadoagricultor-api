@@ -22,29 +22,29 @@ public class DownloadUtils {
 
 	private final Logger log = LogManager.getLogger(getClass());
 
-	public static void main(String[] args) {
-		List<String> years = Arrays.asList("2017", "2018-1", "2019", "2020", "2021", "2022");
-		for (String year : years) {
-			List<MonthsPortugueseEnum> months = Arrays.asList(MonthsPortugueseEnum.values());
-			for (MonthsPortugueseEnum monthEnum : months) {
-				List<DaysEnum> days = Arrays.asList(DaysEnum.values());
-				for (DaysEnum dayEnum : days) {
-					CotationsDownloadRequest request = //
-							CotationsDownloadRequestBuilder //
-									.usingThis() //
-									.day(dayEnum.getDay()) //
-									.monthNumber(monthEnum.getMonthAsNumber()) //
-									.monthString(monthEnum.getMonthAsString()) //
-									.year(year) //
-									.destinyFolder(Constants.DEFAULT_DESTINY_FOLDER + year + "/") //
-									.baseUrl(Constants.DEFAULT_BASE_URL) //
-									.build(); //
-					DownloadUtils downloader = new DownloadUtils();
-					downloader.downloadCotationsAndSavesOnLocalMachine(request);
-				}
-			}
-		}
-	}
+//	public static void main(String[] args) {
+//		List<String> years = Arrays.asList("2017", "2018-1", "2019", "2020", "2021", "2022");
+//		for (String year : years) {
+//			List<MonthsPortugueseEnum> months = Arrays.asList(MonthsPortugueseEnum.values());
+//			for (MonthsPortugueseEnum monthEnum : months) {
+//				List<DaysEnum> days = Arrays.asList(DaysEnum.values());
+//				for (DaysEnum dayEnum : days) {
+//					CotationsDownloadRequest request = //
+//							CotationsDownloadRequestBuilder //
+//									.usingThis() //
+//									.day(dayEnum.getDay()) //
+//									.monthNumber(monthEnum.getMonthAsNumber()) //
+//									.monthString(monthEnum.getMonthAsString()) //
+//									.year(year) //
+//									.destinyFolder(Constants.DEFAULT_DESTINY_FOLDER + year + "/") //
+//									.baseUrl(Constants.DEFAULT_BASE_URL) //
+//									.build(); //
+//					DownloadUtils downloader = new DownloadUtils();
+//					downloader.downloadCotationsAndSavesOnLocalMachine(request);
+//				}
+//			}
+//		}
+//	}
 
 	public void downloadCotationsAndSavesOnLocalMachine(CotationsDownloadRequest request) {
 		try {
