@@ -1,5 +1,7 @@
 package online.guessersoftware.casadoagricultorapi.webservice.constants;
 
+import org.apache.commons.lang3.StringUtils;
+
 public enum MonthsPortugueseEnum {
 
 	JANEIRO("janeiro", "01"), //
@@ -29,6 +31,15 @@ public enum MonthsPortugueseEnum {
 
 	public String getMonthAsNumber() {
 		return monthAsNumber;
+	}
+
+	public static MonthsPortugueseEnum fromMonthNumber(String monthNumber) {
+		for (MonthsPortugueseEnum monthEnum : MonthsPortugueseEnum.values()) {
+			if (StringUtils.equals(monthEnum.getMonthAsNumber(), monthNumber)) {
+				return monthEnum;
+			}
+		}
+		return MonthsPortugueseEnum.JANEIRO; // Returning this as default
 	}
 
 }

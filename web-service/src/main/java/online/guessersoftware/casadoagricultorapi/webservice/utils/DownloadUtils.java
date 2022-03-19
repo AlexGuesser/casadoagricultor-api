@@ -3,21 +3,18 @@ package online.guessersoftware.casadoagricultorapi.webservice.utils;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.stereotype.Component;
 
 import online.guessersoftware.casadoagricultorapi.webservice.constants.Constants;
-import online.guessersoftware.casadoagricultorapi.webservice.constants.DaysEnum;
-import online.guessersoftware.casadoagricultorapi.webservice.constants.MonthsPortugueseEnum;
 
+@Component
 public class DownloadUtils {
 
 	private final Logger log = LogManager.getLogger(getClass());
@@ -50,8 +47,8 @@ public class DownloadUtils {
 		try {
 			log.info("Will try to download and save cotation using request as: " + request);
 
-			String fileFullPathAndName = request.getDestinyFolder() + request.getYear() + Constants.SLASH + request.getMonthNumber()
-					+ Constants.SLASH + request.getDay() + Constants.DOT + Constants.PDF;
+			String fileFullPathAndName = request.getDestinyFolder() + request.getYear() + Constants.SLASH + request.getMonthNumber() + Constants.SLASH
+					+ request.getDay() + Constants.DOT + Constants.PDF;
 
 			// GETS THE HTML OF THE YEAR
 			Document yearDoc = Jsoup.connect(request.getBaseUrl() + request.getYear()).get();
@@ -61,11 +58,12 @@ public class DownloadUtils {
 			}
 
 			// GET THE MONTH'S HTML URL USING TAG FILTERS
-			String monthUrl = yearDoc.select("a[href*=" + request.getMonthString() + "]").first().attr("abs:href");
-			if (StringUtils.isBlank(monthUrl)) {
-				log.warn("Month URL not found inside year HTML from: " + request.getBaseUrl() + request.getYear());
+			Element monthATag = yearDoc.select("a[href*=" + request.getMonthString() + "]").first();
+			if (monthATag == null) {
+				log.warn("Link TAG not found inside year HTML for href filter: " + request.getMonthString());
 				return;
 			}
+			String monthUrl = monthATag.attr("abs:href");
 
 			// GETS THE HTML OF THE MONTH
 			Document monthDoc = Jsoup.connect(monthUrl).get();
@@ -75,19 +73,20 @@ public class DownloadUtils {
 			}
 
 			// GET THE DAY'S COTATION FILE USING TAG FILTERS
-			String tagFilter = request.getDay() + "-" + request.getMonthNumber();
-			Element aTag = monthDoc.select("a[href*=" + tagFilter + "]").first();
-			if (aTag == null) {
-				log.warn("Link TAG not found for href filter: " + tagFilter);
+			String dayTagFilter = request.getDay() + "-" + request.getMonthNumber();
+			Element dayATag = monthDoc.select("a[href*=" + dayTagFilter + "]").first();
+			if (dayATag == null) {
+				log.warn("Link TAG not found inside month HTML for href filter: " + dayTagFilter);
 				return;
 			}
-			String cotationDayFileUrl = aTag.attr("abs:href");
+			String cotationDayFileUrl = dayATag.attr("abs:href");
 
 			URL url = new URL(cotationDayFileUrl);
 			InputStream is = url.openStream();
 			BufferedInputStream fileParse = new BufferedInputStream(is);
 			PDDocument document = PDDocument.load(fileParse);
 			document.save(fileFullPathAndName);
+			document.close();
 		} catch (Exception e) {
 			log.error("Error ocurred while downloading and saving PDF from São José Ceasa using request as " + request + ". Exception: ", e);
 		}

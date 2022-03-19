@@ -15,5 +15,6 @@
 	</parent>
 	<modules>
 		<module>web-service</module>
+		<module>micro-services</module>
 	</modules>
 </project>
