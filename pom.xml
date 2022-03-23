@@ -14,7 +14,8 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<modules>
-		<module>web-service</module>
-		<module>micro-services</module>
+		<module>casadoagricultor-api-web-service</module>
+		<module>casadoagricultor-api-micro-services</module>
+		<module>casadoagricultor-api-common</module>
 	</modules>
 </project>
