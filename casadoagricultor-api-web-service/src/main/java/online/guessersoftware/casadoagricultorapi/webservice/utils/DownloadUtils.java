@@ -12,7 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Component;
 
-import online.guessersoftware.casadoagricultorapi.webservice.constants.Constants;
+import online.guessersoftware.casadoagricultorapi.common.constants.Constants;
 
 @Component
 public class DownloadUtils {

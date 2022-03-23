@@ -19,8 +19,8 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import online.guessersoftware.casadoagricultorapi.common.constants.Constants;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.CeasasEnum;
-import online.guessersoftware.casadoagricultorapi.webservice.constants.Constants;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.PDFMessagesToNotParse;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.PackagingList;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.TypeList;

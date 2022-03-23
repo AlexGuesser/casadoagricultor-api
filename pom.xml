@@ -1,21 +1,184 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>online.guessersoftware</groupId>
 	<artifactId>casadoagricultor-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${revision}</version>
 	<packaging>pom</packaging>
 	<name>casadoagricultor-api</name>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.6.4</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
+
 	<modules>
 		<module>casadoagricultor-api-web-service</module>
 		<module>casadoagricultor-api-micro-services</module>
 		<module>casadoagricultor-api-common</module>
 	</modules>
+
+	<properties>
+		<revision>alpha-0.0.1</revision>
+		<spring.version>2.6.4</spring.version>
+		<mysql.connector.version>8.0.28</mysql.connector.version>
+		<apache.pdfbox.version>2.0.24</apache.pdfbox.version>
+		<jsoup.version>1.14.3</jsoup.version>
+		<apache.lang3.version>3.12.0</apache.lang3.version>
+		<javax.validation.version>2.0.1.Final</javax.validation.version>
+		<hibernate.validator.version>7.0.4.Final</hibernate.validator.version>
+		<glassfish.javax.el>3.0.0</glassfish.javax.el>
+		<javax.mail.api>1.6.2</javax.mail.api>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-data-jpa</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-web</artifactId>
+				<version>${spring.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<!-- Add Log4j2 Dependency -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-log4j2</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-devtools</artifactId>
+				<version>${spring.version}</version>
+				<scope>runtime</scope>
+				<optional>true</optional>
+			</dependency>
+
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<scope>runtime</scope>
+				<version>${mysql.connector.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-test</artifactId>
+				<version>${spring.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${apache.lang3.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.pdfbox</groupId>
+				<artifactId>pdfbox</artifactId>
+				<version>${apache.pdfbox.version}</version>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+			<dependency>
+				<groupId>org.jsoup</groupId>
+				<artifactId>jsoup</artifactId>
+				<version>${jsoup.version}</version>
+			</dependency>
+
+			<!-- These validation dependencies are not working properly. The json 
+				error message is not the one expected. Needs fix! -->
+			<dependency>
+				<groupId>javax.validation</groupId>
+				<artifactId>validation-api</artifactId>
+				<version>${javax.validation.version}</version>
+			</dependency>
+
+			<!-- These validation dependencies are not working properly. The json 
+				error message is not the one expected. Needs fix! -->
+			<dependency>
+				<groupId>org.hibernate.validator</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>${hibernate.validator.version}</version>
+			</dependency>
+
+			<!-- These validation dependencies are not working properly. The json 
+				error message is not the one expected. Needs fix! -->
+			<dependency>
+				<groupId>org.glassfish</groupId>
+				<artifactId>javax.el</artifactId>
+				<version>${glassfish.javax.el}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-mail</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.mail</groupId>
+				<artifactId>javax.mail-api</artifactId>
+				<version>${javax.mail.api}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>online.guessersoftware</groupId>
+				<artifactId>casadoagricultor-api-common</artifactId>
+				<version>${revision}</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>flatten-maven-plugin</artifactId>
+					<version>1.2.2</version>
+					<configuration>
+					</configuration>
+					<executions>
+						<!-- enable flattening -->
+						<execution>
+							<id>flatten</id>
+							<phase>process-resources</phase>
+							<goals>
+								<goal>flatten</goal>
+							</goals>
+						</execution>
+						<!-- ensure proper cleanup -->
+						<execution>
+							<id>flatten.clean</id>
+							<phase>clean</phase>
+							<goals>
+								<goal>clean</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
 </project>

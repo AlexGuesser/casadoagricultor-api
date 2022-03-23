@@ -6,11 +6,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
-import online.guessersoftware.casadoagricultorapi.webservice.constants.Constants;
+import online.guessersoftware.casadoagricultorapi.common.constants.Constants;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.PDFMessagesToNotParse;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.PackagingList;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.TypeList;

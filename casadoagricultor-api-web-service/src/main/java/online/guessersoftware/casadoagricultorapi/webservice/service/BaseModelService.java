@@ -3,7 +3,7 @@ package online.guessersoftware.casadoagricultorapi.webservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import online.guessersoftware.casadoagricultorapi.webservice.constants.Constants;
+import online.guessersoftware.casadoagricultorapi.common.constants.Constants;
 import online.guessersoftware.casadoagricultorapi.webservice.model.BaseModel;
 
 @Service
