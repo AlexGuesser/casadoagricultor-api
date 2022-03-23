@@ -99,16 +99,15 @@
 			<artifactId>javax.mail-api</artifactId>
 		</dependency>
 
-
 		<dependency>
 			<groupId>online.guessersoftware</groupId>
 			<artifactId>casadoagricultor-api-common</artifactId>
 		</dependency>
 
-		<!-- Maintaining that for future tests -->
-		<!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
-		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
-
+		<dependency>
+			<groupId>online.guessersoftware</groupId>
+			<artifactId>casadoagricultor-api-micro-service-email-sender</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

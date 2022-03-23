@@ -33,6 +33,9 @@
 		<hibernate.validator.version>7.0.4.Final</hibernate.validator.version>
 		<glassfish.javax.el>3.0.0</glassfish.javax.el>
 		<javax.mail.api>1.6.2</javax.mail.api>
+		<apache.commons.validator.version>1.7</apache.commons.validator.version>
+		<apache.commons.io.version>2.11.0</apache.commons.io.version>
+		<tika.version>2.3.0</tika.version>
 	</properties>
 
 	<dependencyManagement>
@@ -146,6 +149,32 @@
 				<version>${revision}</version>
 			</dependency>
 
+			<!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
+			<dependency>
+				<groupId>commons-validator</groupId>
+				<artifactId>commons-validator</artifactId>
+				<version>${apache.commons.validator.version}</version>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${apache.commons.io.version}</version>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/org.apache.tika/tika-core -->
+			<dependency>
+				<groupId>org.apache.tika</groupId>
+				<artifactId>tika-core</artifactId>
+				<version>${tika.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>online.guessersoftware</groupId>
+				<artifactId>casadoagricultor-api-micro-service-email-sender</artifactId>
+				<version>${revision}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

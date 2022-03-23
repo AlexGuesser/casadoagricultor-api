@@ -10,5 +10,9 @@ public class Constants {
 	public static final String PDF = "pdf";
 	public static final String DEFAULT_DESTINY_FOLDER = "/home/alex/Desktop/Senai/TCC/Projects/pdfs/";
 	public static final String DEFAULT_BASE_URL = "https://www.ceasa.sc.gov.br/index.php/cotacao-de-precos/";
-
+	public static final String MAIL_REGEX_VALIDATOR = "[_A-Za-z0-9!#$%&'*+-/=?^_`{|}~\\+]+(\\.[_A-Za-z0-9!#$%&'*+-/=?^_`{|}~]+)*@[A-Za-z0-9]+[A-Za-z0-9-]*(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})";
+	public static final String CNF_MAIL_SERVER_CHARSET = "UTF-8";
+	public static final String NEWLINE = "<br/>";
+	public static final String MAIL_DEFAULT_SENDER = "alex.guesser@lagoasoft.com.br";
+	public static final String MAIL_DEFAULT_RECEIVER = "alex.guesser@hotmail.com";
 }
