@@ -36,7 +36,7 @@ public class CotationService {
 
 	private void saveCotationValueObject(CotationValueObject cVO) {
 		Cotation newCotation = CotationTransformer.transformVOToModel(cVO);
-		newCotation.setCeasa(ceasaService.getCeasaByName(cVO.getCeasaValueObject().getName()));
+		// newCotation.setCeasa(ceasaService.getCeasaByName(cVO.getCeasaValueObject().getName()));
 		newCotation.setProductAndVariety(retrieveOrCreateProductAndVariety(cVO.getProductAndVarietyValueObject().getName()));
 		newCotation.setPrice(baseModelService.setLastUserAsTechJobProcessorUser(newCotation.getPrice()));
 		newCotation = baseModelService.setLastUserAsTechJobProcessorUser(newCotation);

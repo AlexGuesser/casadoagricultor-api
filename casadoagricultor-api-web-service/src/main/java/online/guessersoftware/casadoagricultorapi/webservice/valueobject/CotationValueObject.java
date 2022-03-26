@@ -1,12 +1,12 @@
 package online.guessersoftware.casadoagricultorapi.webservice.valueobject;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import online.guessersoftware.casadoagricultorapi.webservice.constants.CeasasEnum;
 
 public class CotationValueObject {
 
-	private Date fromDay;
+	private LocalDate fromDay;
 	private String classification;
 	private String type;
 	private String origin;
@@ -19,9 +19,8 @@ public class CotationValueObject {
 	public CotationValueObject() {
 	}
 
-	public CotationValueObject(Date fromDay, String classification, String type, String origin, String packaging,
-			String commonWeight, ProductAndVarietyValueObject productAndVarietyValueObject,
-			PriceValueObject priceValueObject, CeasaValueObject ceasaValueObject) {
+	public CotationValueObject(LocalDate fromDay, String classification, String type, String origin, String packaging, String commonWeight,
+			ProductAndVarietyValueObject productAndVarietyValueObject, PriceValueObject priceValueObject, CeasaValueObject ceasaValueObject) {
 		this.fromDay = fromDay;
 		this.classification = classification;
 		this.type = type;
@@ -33,11 +32,11 @@ public class CotationValueObject {
 		this.ceasaValueObject = ceasaValueObject;
 	}
 
-	public Date getFromDay() {
+	public LocalDate getFromDay() {
 		return fromDay;
 	}
 
-	public void setFromDay(Date fromDay) {
+	public void setFromDay(LocalDate fromDay) {
 		this.fromDay = fromDay;
 	}
 
@@ -123,8 +122,7 @@ public class CotationValueObject {
 		result = prime * result + ((origin == null) ? 0 : origin.hashCode());
 		result = prime * result + ((packaging == null) ? 0 : packaging.hashCode());
 		result = prime * result + ((priceValueObject == null) ? 0 : priceValueObject.hashCode());
-		result = prime * result
-				+ ((productAndVarietyValueObject == null) ? 0 : productAndVarietyValueObject.hashCode());
+		result = prime * result + ((productAndVarietyValueObject == null) ? 0 : productAndVarietyValueObject.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
@@ -188,9 +186,8 @@ public class CotationValueObject {
 
 	@Override
 	public String toString() {
-		return "CotationValueObject [fromDay=" + fromDay + ", classification=" + classification + ", type=" + type
-				+ ", origin=" + origin + ", packaging=" + packaging + ", commonWeight=" + commonWeight
-				+ ", productAndVarietyValueObject=" + productAndVarietyValueObject + ", priceValueObject="
+		return "CotationValueObject [fromDay=" + fromDay + ", classification=" + classification + ", type=" + type + ", origin=" + origin + ", packaging="
+				+ packaging + ", commonWeight=" + commonWeight + ", productAndVarietyValueObject=" + productAndVarietyValueObject + ", priceValueObject="
 				+ priceValueObject + ", ceasaValueObject=" + ceasaValueObject + "]";
 	}
 

@@ -1,5 +1,6 @@
 package online.guessersoftware.casadoagricultorapi.webservice.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -16,7 +17,7 @@ import javax.persistence.Table;
 public class Cotation extends BaseModel {
 
 	@Column(name = "from_day")
-	private Date fromDay;
+	private LocalDate fromDay;
 
 	@Column(name = "classification")
 	private String classification;
@@ -42,15 +43,14 @@ public class Cotation extends BaseModel {
 	private Price price;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ceasa_FK")
-	private Ceasa ceasa;
+	@JoinColumn(name = "cotation_file_FK")
+	private CotationFile cotationFile;
 
 	public Cotation() {
 	}
 
-	public Cotation(Date fromDay, String classification, String type, String origin,
-			String packaging, float communWeight, ProductAndVariety productAndVariety, Price price,
-			Ceasa ceasa) {
+	public Cotation(LocalDate fromDay, String classification, String type, String origin, String packaging, float communWeight, ProductAndVariety productAndVariety,
+			Price price, CotationFile cotationFile) {
 		this.fromDay = fromDay;
 		this.classification = classification;
 		this.type = type;
@@ -59,14 +59,14 @@ public class Cotation extends BaseModel {
 		this.communWeight = communWeight;
 		this.productAndVariety = productAndVariety;
 		this.price = price;
-		this.ceasa = ceasa;
+		this.cotationFile = cotationFile;
 	}
 
-	public Date getFromDay() {
+	public LocalDate getFromDay() {
 		return fromDay;
 	}
 
-	public void setFromDay(Date fromDay) {
+	public void setFromDay(LocalDate fromDay) {
 		this.fromDay = fromDay;
 	}
 
@@ -126,21 +126,88 @@ public class Cotation extends BaseModel {
 		this.price = price;
 	}
 
-	public Ceasa getCeasa() {
-		return ceasa;
+	public CotationFile getCotationFile() {
+		return cotationFile;
 	}
 
-	public void setCeasa(Ceasa ceasa) {
-		this.ceasa = ceasa;
+	public void setCotationFile(CotationFile cotationFile) {
+		this.cotationFile = cotationFile;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((classification == null) ? 0 : classification.hashCode());
+		result = prime * result + Float.floatToIntBits(communWeight);
+		result = prime * result + ((cotationFile == null) ? 0 : cotationFile.hashCode());
+		result = prime * result + ((fromDay == null) ? 0 : fromDay.hashCode());
+		result = prime * result + ((origin == null) ? 0 : origin.hashCode());
+		result = prime * result + ((packaging == null) ? 0 : packaging.hashCode());
+		result = prime * result + ((price == null) ? 0 : price.hashCode());
+		result = prime * result + ((productAndVariety == null) ? 0 : productAndVariety.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cotation other = (Cotation) obj;
+		if (classification == null) {
+			if (other.classification != null)
+				return false;
+		} else if (!classification.equals(other.classification))
+			return false;
+		if (Float.floatToIntBits(communWeight) != Float.floatToIntBits(other.communWeight))
+			return false;
+		if (cotationFile == null) {
+			if (other.cotationFile != null)
+				return false;
+		} else if (!cotationFile.equals(other.cotationFile))
+			return false;
+		if (fromDay == null) {
+			if (other.fromDay != null)
+				return false;
+		} else if (!fromDay.equals(other.fromDay))
+			return false;
+		if (origin == null) {
+			if (other.origin != null)
+				return false;
+		} else if (!origin.equals(other.origin))
+			return false;
+		if (packaging == null) {
+			if (other.packaging != null)
+				return false;
+		} else if (!packaging.equals(other.packaging))
+			return false;
+		if (price == null) {
+			if (other.price != null)
+				return false;
+		} else if (!price.equals(other.price))
+			return false;
+		if (productAndVariety == null) {
+			if (other.productAndVariety != null)
+				return false;
+		} else if (!productAndVariety.equals(other.productAndVariety))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Cotation [fromDay=" + fromDay + ", classification=" + classification + ", type=" + type + ", origin=" + origin
-				+ ", packaging=" + packaging + ", communWeight=" + communWeight + ", productAndVariety=" + productAndVariety
-				+ ", price=" + price + ", ceasa=" + ceasa + "]";
+		return "Cotation [fromDay=" + fromDay + ", classification=" + classification + ", type=" + type + ", origin=" + origin + ", packaging=" + packaging
+				+ ", communWeight=" + communWeight + ", productAndVariety=" + productAndVariety + ", price=" + price + ", cotationFile=" + cotationFile + "]";
 	}
-	
-	
 
 }

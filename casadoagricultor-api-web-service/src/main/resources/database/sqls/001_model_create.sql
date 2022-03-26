@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `casa_do_agricultor`.`cotation_file` (
   `format` VARCHAR(256) NOT NULL,
   `url` VARCHAR(512) NOT NULL,
   `storage_reference` VARCHAR(512) ,
-  `saved_locally_or_clod` VARCHAR(10),
+  `saved_locally_or_cloud` VARCHAR(10),
   `ceasa_FK` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_cotation_file_user`

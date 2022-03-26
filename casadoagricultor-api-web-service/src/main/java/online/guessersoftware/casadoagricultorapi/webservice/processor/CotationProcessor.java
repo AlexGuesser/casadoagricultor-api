@@ -1,12 +1,13 @@
 package online.guessersoftware.casadoagricultorapi.webservice.processor;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import online.guessersoftware.casadoagricultorapi.common.constants.Constants;
+import online.guessersoftware.casadoagricultorapi.microserviceemailsender.service.MailService;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.CeasasEnum;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.PDFMessagesToNotParse;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.PackagingList;
@@ -34,32 +36,51 @@ public class CotationProcessor {
 
 	@Autowired
 	private CotationService cotationService;
+	
+	@Autowired
+	private MailService mailService;
 
 	public void processByUrl(String urlString, CeasasEnum ceasa) {
 		try {
-
 			PDDocument document = createPDDocumentByUrl(urlString);
-			String[] lines = getLinesOfPDDocument(document);
-			List<String> linesWithCotations = excludeNotCotationsLines(lines);
-			String dateOfCotations = getDateOfCotations(linesWithCotations);
-			linesWithCotations = makeAdjustsAndfiltersOnCotationLines(linesWithCotations);
-
-			// ########## COTATIONS #######
-			List<CotationValueObject> cotationsValueObject = new ArrayList<CotationValueObject>();
-			List<String> linesWithCotationsAdjusted = new ArrayList<String>();
-
-			adjustAndInsertCotationsLines(linesWithCotations, linesWithCotationsAdjusted);
-			linesWithCotationsAdjusted.forEach(cotation -> {
-				CotationValueObject cotationValueObject = parseAndCreateCotation(ceasa, cotation, dateOfCotations);
-				if (cotationValueObject != null) {
-					cotationsValueObject.add(cotationValueObject);
-				}
-			});
-			document.close();
-			cotationService.saveCotationsValueObject(cotationsValueObject);
+			processPDDocument(document, ceasa);
 		} catch (Exception e) {
 			logger.error(e);
 		}
+	}
+
+	public void processLocalFile(ProcessLocalCotationFileRequest request) {
+		try {
+			PDDocument document = createPDDocumentByLocalFile(request.getFileFullPath());
+			processPDDocument(document, request.getCeasa());
+		} catch (Exception e) {
+			logger.error(e);
+		}
+	}
+
+	private PDDocument createPDDocumentByLocalFile(String fileFullPath) throws IOException {
+		return PDDocument.load(new File(fileFullPath));
+	}
+
+	public void processPDDocument(PDDocument document, CeasasEnum ceasa) throws IOException {
+		String[] lines = getLinesOfPDDocument(document);
+		List<String> linesWithCotations = excludeNotCotationsLines(lines);
+		String dateOfCotations = getDateOfCotations(linesWithCotations);
+		linesWithCotations = makeAdjustsAndfiltersOnCotationLines(linesWithCotations);
+
+		// ########## COTATIONS #######
+		List<CotationValueObject> cotationsValueObject = new ArrayList<CotationValueObject>();
+		List<String> linesWithCotationsAdjusted = new ArrayList<String>();
+
+		adjustAndInsertCotationsLines(linesWithCotations, linesWithCotationsAdjusted);
+		linesWithCotationsAdjusted.forEach(cotation -> {
+			CotationValueObject cotationValueObject = parseAndCreateCotation(ceasa, cotation, dateOfCotations);
+			if (cotationValueObject != null) {
+				cotationsValueObject.add(cotationValueObject);
+			}
+		});
+		document.close();
+		cotationService.saveCotationsValueObject(cotationsValueObject);
 	}
 
 	private void adjustAndInsertCotationsLines(List<String> linesWithCotations, List<String> linesWithCotationsAdjusted) {
@@ -77,14 +98,12 @@ public class CotationProcessor {
 	}
 
 	private List<String> makeAdjustsAndfiltersOnCotationLines(List<String> linesWithCotations) {
-		List<String> linesFiltered = linesWithCotations.stream()
-				.filter(cotation -> (cotation.length() <= 17 && !StringUtils.equals(cotation, "Escovada")))
+		List<String> linesFiltered = linesWithCotations.stream().filter(cotation -> (cotation.length() <= 17 && !StringUtils.equals(cotation, "Escovada")))
 				.collect(Collectors.toList());
 		logger.info("Filtering the following lines: ");
 		linesFiltered.forEach(lf -> logger.info(lf));
-		
-		linesWithCotations = linesWithCotations.stream()
-				.filter(cotation -> (cotation.length() > 17 || StringUtils.equals(cotation, "Escovada")))
+
+		linesWithCotations = linesWithCotations.stream().filter(cotation -> (cotation.length() > 17 || StringUtils.equals(cotation, "Escovada")))
 				.collect(Collectors.toList());
 
 		return linesWithCotations;
@@ -125,8 +144,8 @@ public class CotationProcessor {
 		CotationValueObject cotation = new CotationValueObject();
 		cotation.setCeasaValueObject(ceasa);
 		try {
-			cotation.setFromDay(new SimpleDateFormat("dd/MM/yyyy").parse(dateOfCotation));
-		} catch (ParseException e) {
+			cotation.setFromDay(LocalDate.parse(dateOfCotation));
+		} catch (DateTimeParseException e) {
 			logger.error("Error while parsing date. Date: " + dateOfCotation + ". Exception: " + e.getMessage());
 			return null;
 		}
@@ -135,8 +154,7 @@ public class CotationProcessor {
 		for (int i = 0; i < cotationString.length(); i++) {
 			if (Constants.NUMBERS.contains(String.valueOf(cotationString.charAt(i)))) {
 				charPositionOfMinimunPrice = i;
-				cotation.getProductAndVarietyValueObject()
-						.setName(StringUtils.trim(cotationString.substring(0, charPositionOfMinimunPrice)));
+				cotation.getProductAndVarietyValueObject().setName(StringUtils.trim(cotationString.substring(0, charPositionOfMinimunPrice)));
 				cotationString = StringUtils.trim(cotationString.substring(charPositionOfMinimunPrice, cotationString.length()));
 				break;
 			}
@@ -156,8 +174,7 @@ public class CotationProcessor {
 		for (int i = cotationString.length() - 1; i >= 0; i--) {
 			if (StringUtils.equals(" ", String.valueOf(cotationString.charAt(i)))) {
 				firstSpacePosition = i;
-				cotation.getPriceValueObject().setCommonPricePerKg(
-						StringUtils.trim(cotationString.substring(firstSpacePosition, cotationString.length())));
+				cotation.getPriceValueObject().setCommonPricePerKg(StringUtils.trim(cotationString.substring(firstSpacePosition, cotationString.length())));
 				cotationString = StringUtils.trim(cotationString.substring(0, firstSpacePosition));
 				break;
 			}
