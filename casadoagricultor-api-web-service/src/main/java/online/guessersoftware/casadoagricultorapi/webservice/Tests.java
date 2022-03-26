@@ -1,43 +1,22 @@
 package online.guessersoftware.casadoagricultorapi.webservice;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
 
 public class Tests {
 
-	public static void main(String[] args) throws IOException {
+	// Find your Account Sid and Token at twilio.com/console
+	public static final String ACCOUNT_SID = "ACeed0b8b3485187697c8c979c6920373a";
+	public static final String AUTH_TOKEN = "b16589a4e29e15d4fb8d5efea172229f";
 
-		String year = "2020";
-		String month = "marco";
-		String monthAsNumber = "03";
-		String day = "31";
-		String slash = "-";
-		String dot = ".";
-		String pdf = "pdf";
-
-		String fileFullPathAndName = "/home/alex/Desktop/Senai/TCC/Projects/pdfs/" //
-				+ day + slash + monthAsNumber + slash + year + dot + pdf;
-
-		// GETS THE HTML OF THE YEAR
-		Document yearDoc = Jsoup.connect("https://www.ceasa.sc.gov.br/index.php/cotacao-de-precos/" + year).get();
-		// GET THE MONTH'S HTML URL USING TAG FILTERS
-		String monthUrl = yearDoc.select("a[href*=" + month + "]").first().attr("abs:href");
-		// GETS THE HTML OF THE MONTH
-		Document monthDoc = Jsoup.connect(monthUrl).get();
-		// GET THE DAY'S COTATION FILE USING TAG FILTERS
-		String urlFileDay = monthDoc.select("a[href*=" + day + "-" + monthAsNumber + "]").first().attr("abs:href");
-
-		URL url = new URL(urlFileDay);
-		InputStream is = url.openStream();
-		BufferedInputStream fileParse = new BufferedInputStream(is);
-		PDDocument document = PDDocument.load(fileParse);
-		document.save(fileFullPathAndName);
+	public static void main(String[] args) {
+		Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+		Message message = Message.creator( //
+				new com.twilio.type.PhoneNumber("whatsapp:+5548988115548"), //
+				new com.twilio.type.PhoneNumber("whatsapp:+14155238886"), //
+				"Mensagem de teste automática enviada por alguma aplicação da Guesser Software") //
+				.create(); //
+		System.out.println(message.getSid());
 	}
 
 }

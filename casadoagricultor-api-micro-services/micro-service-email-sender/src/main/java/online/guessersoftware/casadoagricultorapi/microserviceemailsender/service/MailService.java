@@ -13,7 +13,7 @@ public class MailService {
 	private static final Logger log = LogManager.getLogger(MailService.class);
 
 	@Autowired
-	private MailSenderService mailSender;
+	private MailSenderService emailSender;
 
 	public boolean sendTestMail() {
 		log.info("Sending Test mail");
@@ -26,7 +26,7 @@ public class MailService {
 				.subject("Mail Test Subject") //
 				.content("Mail Test Content", false); //
 
-		return mailSender.send(mail);
+		return emailSender.send(mail);
 	}
 
 }

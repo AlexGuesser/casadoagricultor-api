@@ -94,6 +94,66 @@ CREATE TABLE IF NOT EXISTS `casa_do_agricultor`.`ceasa` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `casa_do_agricultor`.`cotation_file`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `casa_do_agricultor`.`cotation_file` ;
+
+CREATE TABLE IF NOT EXISTS `casa_do_agricultor`.`cotation_file` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `deleted` TINYINT NOT NULL DEFAULT 0,
+  `last_user` BIGINT(20) NOT NULL DEFAULT 2,
+  `last_operation` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `successfully_processed` TINYINT NOT NULL DEFAULT 1,
+  `filename` VARCHAR(256) NOT NULL,
+  `format` VARCHAR(256) NOT NULL,
+  `url` VARCHAR(512) NOT NULL,
+  `storage_reference` VARCHAR(512) ,
+  `saved_locally_or_clod` VARCHAR(10),
+  `ceasa_FK` BIGINT(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_cotation_file_user`
+    FOREIGN KEY (`last_user`)
+    REFERENCES `casa_do_agricultor`.`user` (`id`),
+  CONSTRAINT `fk_cotation_file_ceasa`
+    FOREIGN KEY (`ceasa_FK`)
+    REFERENCES `casa_do_agricultor`.`ceasa` (`id`))
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `casa_do_agricultor`.`processing_errors_warnings`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `casa_do_agricultor`.`processing_errors_warnings` ;
+
+CREATE TABLE IF NOT EXISTS `casa_do_agricultor`.`processing_errors_warnings` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `deleted` TINYINT NOT NULL DEFAULT 0,
+  `last_user` BIGINT(20) NOT NULL DEFAULT 2,
+  `last_operation` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `error_or_warning` VARCHAR(10) NOT NULL,
+  `code` VARCHAR(256) NOT NULL,
+  `problem` VARCHAR(256) NOT NULL,
+  `solution` VARCHAR(512) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `casa_do_agricultor`.`cotation_file_processing_errors_warnings`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `casa_do_agricultor`.`cotation_file_processing_errors_warnings` ;
+
+CREATE TABLE IF NOT EXISTS `casa_do_agricultor`.`cotation_file_processing_errors_warnings` (
+  `cotation_file_fk` BIGINT(20) NOT NULL,
+  `processing_errors_warnings_fk` BIGINT(20) NOT NULL,
+  PRIMARY KEY (`cotation_file_fk`,`processing_errors_warnings_fk`),
+  CONSTRAINT `fk_cotation_file_processing_errors_warnings_file`
+    FOREIGN KEY (`cotation_file_fk`)
+    REFERENCES `casa_do_agricultor`.`cotation_file` (`id`),
+  CONSTRAINT `fk_cotation_file_processing_errors_warnings_error`
+    FOREIGN KEY (`processing_errors_warnings_fk`)
+    REFERENCES `casa_do_agricultor`.`processing_errors_warnings` (`id`))
+ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Table `casa_do_agricultor`.`cotation`
@@ -113,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `casa_do_agricultor`.`cotation` (
   `commun_weight` FLOAT NULL,
   `product_and_variety_FK` BIGINT(20) NOT NULL,
   `price_FK` BIGINT(20) NOT NULL,
-  `ceasa_FK` BIGINT(20) NOT NULL,
+  `cotation_file_FK` BIGINT(20) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_cotation_product_and_variety`
     FOREIGN KEY (`product_and_variety_FK`)
@@ -121,9 +181,9 @@ CREATE TABLE IF NOT EXISTS `casa_do_agricultor`.`cotation` (
   CONSTRAINT `fk_cotation_price`
     FOREIGN KEY (`price_FK`)
     REFERENCES `casa_do_agricultor`.`price` (`id`),
-  CONSTRAINT `fk_cotation_ceasa`
-    FOREIGN KEY (`ceasa_FK`)
-    REFERENCES `casa_do_agricultor`.`ceasa` (`id`))
+  CONSTRAINT `fk_cotation_cotation_file`
+    FOREIGN KEY (`cotation_file_FK`)
+    REFERENCES `casa_do_agricultor`.`cotation_file` (`id`))
 ENGINE = InnoDB;
 
 ALTER TABLE `casa_do_agricultor`.`product_and_variety`  ADD INDEX `idx_product_and_variety_name` (`name`); 
