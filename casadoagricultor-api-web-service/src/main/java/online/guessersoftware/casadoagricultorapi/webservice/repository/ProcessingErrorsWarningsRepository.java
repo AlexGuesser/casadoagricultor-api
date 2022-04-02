@@ -8,4 +8,6 @@ import online.guessersoftware.casadoagricultorapi.webservice.model.ProcessingErr
 @Repository
 public interface ProcessingErrorsWarningsRepository extends JpaRepository<ProcessingErrorsWarnings, Long> {
 
+	ProcessingErrorsWarnings findByCode(String code);
+
 }

@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -39,6 +40,10 @@ public class CotationFile extends BaseModel {
 	private Ceasa ceasa;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable( //
+			name = "cotation_file_processing_errors_warnings", //
+			joinColumns = @JoinColumn(name = "cotation_file_fk"), //
+			inverseJoinColumns = @JoinColumn(name = "processing_errors_warnings_fk")) //
 	private Set<ProcessingErrorsWarnings> errorsAndWarnings = new HashSet<ProcessingErrorsWarnings>();
 
 	public CotationFile() {
@@ -109,6 +114,18 @@ public class CotationFile extends BaseModel {
 
 	public void setCeasa(Ceasa ceasa) {
 		this.ceasa = ceasa;
+	}
+
+	public Set<ProcessingErrorsWarnings> getErrorsAndWarnings() {
+		return errorsAndWarnings;
+	}
+
+	public void setErrorsAndWarnings(Set<ProcessingErrorsWarnings> errorsAndWarnings) {
+		this.errorsAndWarnings = errorsAndWarnings;
+	}
+
+	public void addErrorOrWarning(ProcessingErrorsWarnings errorOrWarning) {
+		this.errorsAndWarnings.add(errorOrWarning);
 	}
 
 	@Override

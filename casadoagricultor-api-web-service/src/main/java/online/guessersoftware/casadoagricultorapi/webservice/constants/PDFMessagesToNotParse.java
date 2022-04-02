@@ -15,7 +15,8 @@ public enum PDFMessagesToNotParse {
 	GOVERNMENT("Governo do Estado de Santa Catarina"), //
 	SAR("Secretaria de Estado da Agricultura e da Pesca - SAR"), //
 	COTATIONS_REPORT("Relatório de Cotações do dia :"), //
-	CEASA_SC("Centrais de Abastecimento do Estado de Santa Catarina - CEASA/SC");
+	CEASA_SC("Centrais de Abastecimento do Estado de Santa Catarina - CEASA/SC"), //
+	CEASA_SC_2("Centrais de Abastecimento do Estado de Santa Catarina -");
 
 	private String text;
 

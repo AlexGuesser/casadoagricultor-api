@@ -1,13 +1,17 @@
 package online.guessersoftware.casadoagricultorapi.webservice.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import online.guessersoftware.casadoagricultorapi.webservice.model.Ceasa;
 import online.guessersoftware.casadoagricultorapi.webservice.model.Cotation;
+import online.guessersoftware.casadoagricultorapi.webservice.model.CotationFile;
 import online.guessersoftware.casadoagricultorapi.webservice.model.ProductAndVariety;
 import online.guessersoftware.casadoagricultorapi.webservice.repository.CotationRepository;
 import online.guessersoftware.casadoagricultorapi.webservice.transformer.CotationTransformer;
@@ -30,13 +34,13 @@ public class CotationService {
 
 	private final Logger logger = LogManager.getLogger(getClass());
 
-	public void saveCotationsValueObject(List<CotationValueObject> cotationsValueObject) {
-		cotationsValueObject.stream().forEach(cVO -> saveCotationValueObject(cVO));
+	public void saveCotationsValueObject(List<CotationValueObject> cotationsValueObject, CotationFile cotationFile) {
+		cotationsValueObject.stream().forEach(cVO -> saveCotationValueObject(cVO, cotationFile));
 	}
 
-	private void saveCotationValueObject(CotationValueObject cVO) {
+	private void saveCotationValueObject(CotationValueObject cVO, CotationFile cotationFile) {
 		Cotation newCotation = CotationTransformer.transformVOToModel(cVO);
-		// newCotation.setCeasa(ceasaService.getCeasaByName(cVO.getCeasaValueObject().getName()));
+		newCotation.setCotationFile(cotationFile);
 		newCotation.setProductAndVariety(retrieveOrCreateProductAndVariety(cVO.getProductAndVarietyValueObject().getName()));
 		newCotation.setPrice(baseModelService.setLastUserAsTechJobProcessorUser(newCotation.getPrice()));
 		newCotation = baseModelService.setLastUserAsTechJobProcessorUser(newCotation);
@@ -53,7 +57,12 @@ public class CotationService {
 		ProductAndVariety newProductAndVariety = new ProductAndVariety(name);
 		newProductAndVariety = baseModelService.setLastUserAsTechJobProcessorUser(newProductAndVariety);
 		return productService.createProductAndVariety(newProductAndVariety);
+	}
 
+	public List<CotationValueObject> getContationsBy(LocalDate day, String ceasaName, int page, int size) {
+		Ceasa ceasa = ceasaService.getCeasaByName(ceasaName);
+		return CotationTransformer.transformModelToVO( //
+				cotationRepository.getCotationsBy(day, ceasa.getId(), PageRequest.of(page, size))); //
 	}
 
 }

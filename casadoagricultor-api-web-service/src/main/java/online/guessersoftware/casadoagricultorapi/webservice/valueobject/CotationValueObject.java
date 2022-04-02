@@ -14,13 +14,13 @@ public class CotationValueObject {
 	private String commonWeight;
 	private ProductAndVarietyValueObject productAndVarietyValueObject = new ProductAndVarietyValueObject();
 	private PriceValueObject priceValueObject = new PriceValueObject();
-	private CeasaValueObject ceasaValueObject = new CeasaValueObject();
+	private String ceasaName;
 
 	public CotationValueObject() {
 	}
 
 	public CotationValueObject(LocalDate fromDay, String classification, String type, String origin, String packaging, String commonWeight,
-			ProductAndVarietyValueObject productAndVarietyValueObject, PriceValueObject priceValueObject, CeasaValueObject ceasaValueObject) {
+			ProductAndVarietyValueObject productAndVarietyValueObject, PriceValueObject priceValueObject, String ceasaName) {
 		this.fromDay = fromDay;
 		this.classification = classification;
 		this.type = type;
@@ -29,7 +29,7 @@ public class CotationValueObject {
 		this.commonWeight = commonWeight;
 		this.productAndVarietyValueObject = productAndVarietyValueObject;
 		this.priceValueObject = priceValueObject;
-		this.ceasaValueObject = ceasaValueObject;
+		this.ceasaName = ceasaName;
 	}
 
 	public LocalDate getFromDay() {
@@ -96,26 +96,23 @@ public class CotationValueObject {
 		this.priceValueObject = priceValueObject;
 	}
 
-	public CeasaValueObject getCeasaValueObject() {
-		return ceasaValueObject;
+	public String getCeasaName() {
+		return this.ceasaName;
 	}
 
-	public void setCeasaValueObject(CeasaValueObject ceasaValueObject) {
-		this.ceasaValueObject = ceasaValueObject;
+	public void setCeasaName(String ceasaName) {
+		this.ceasaName = ceasaName;
 	}
 
-	public void setCeasaValueObject(CeasasEnum ceasa) {
-		this.getCeasaValueObject().setName(ceasa.getName());
-		this.getCeasaValueObject().setCity(ceasa.getCity());
-		this.getCeasaValueObject().setState(ceasa.getState());
-		this.getCeasaValueObject().setCountry(ceasa.getCountry());
+	public void setCeasaName(CeasasEnum ceasa) {
+		this.ceasaName = ceasa.getName();
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((ceasaValueObject == null) ? 0 : ceasaValueObject.hashCode());
+		result = prime * result + ((ceasaName == null) ? 0 : ceasaName.hashCode());
 		result = prime * result + ((classification == null) ? 0 : classification.hashCode());
 		result = prime * result + ((commonWeight == null) ? 0 : commonWeight.hashCode());
 		result = prime * result + ((fromDay == null) ? 0 : fromDay.hashCode());
@@ -136,10 +133,10 @@ public class CotationValueObject {
 		if (getClass() != obj.getClass())
 			return false;
 		CotationValueObject other = (CotationValueObject) obj;
-		if (ceasaValueObject == null) {
-			if (other.ceasaValueObject != null)
+		if (ceasaName == null) {
+			if (other.ceasaName != null)
 				return false;
-		} else if (!ceasaValueObject.equals(other.ceasaValueObject))
+		} else if (!ceasaName.equals(other.ceasaName))
 			return false;
 		if (classification == null) {
 			if (other.classification != null)
@@ -188,7 +185,7 @@ public class CotationValueObject {
 	public String toString() {
 		return "CotationValueObject [fromDay=" + fromDay + ", classification=" + classification + ", type=" + type + ", origin=" + origin + ", packaging="
 				+ packaging + ", commonWeight=" + commonWeight + ", productAndVarietyValueObject=" + productAndVarietyValueObject + ", priceValueObject="
-				+ priceValueObject + ", ceasaValueObject=" + ceasaValueObject + "]";
+				+ priceValueObject + ", ceasaName=" + ceasaName + "]";
 	}
 
 }

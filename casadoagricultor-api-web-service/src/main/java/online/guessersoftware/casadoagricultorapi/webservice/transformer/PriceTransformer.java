@@ -18,4 +18,13 @@ public class PriceTransformer {
 		return price;
 	}
 
+	public static PriceValueObject transformModelToVO(Price price) {
+		PriceValueObject pVO = new PriceValueObject();
+		pVO.setMinimunPrice(StringUtils.replace(String.valueOf(price.getMinimum()), ".", ","));
+		pVO.setCommonPrice(StringUtils.replace(String.valueOf(price.getCommon()), ".", ","));
+		pVO.setMaximunPrice(StringUtils.replace(String.valueOf(price.getMaximum()), ".", ","));
+		pVO.setCommonPricePerKg(StringUtils.replace(String.valueOf(price.getKgCommon()), ".", ","));
+		return pVO;
+	}
+
 }

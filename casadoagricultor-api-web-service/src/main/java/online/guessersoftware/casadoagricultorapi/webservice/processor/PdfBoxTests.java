@@ -13,8 +13,8 @@ import org.apache.pdfbox.text.PDFTextStripper;
 
 import online.guessersoftware.casadoagricultorapi.common.constants.Constants;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.PDFMessagesToNotParse;
-import online.guessersoftware.casadoagricultorapi.webservice.constants.PackagingList;
-import online.guessersoftware.casadoagricultorapi.webservice.constants.TypeList;
+import online.guessersoftware.casadoagricultorapi.webservice.constants.PackagingListEnum;
+import online.guessersoftware.casadoagricultorapi.webservice.constants.TypeListEnum;
 import online.guessersoftware.casadoagricultorapi.webservice.valueobject.CotationValueObject;
 
 public class PdfBoxTests {
@@ -110,7 +110,7 @@ public class PdfBoxTests {
 			}
 		}
 		// ### TYPE
-		for (String type : TypeList.getValues()) {
+		for (String type : TypeListEnum.getValues()) {
 			if (text.contains(type)) {
 				text = text.replace(type, "");
 				cotation.setType(type);
@@ -120,7 +120,7 @@ public class PdfBoxTests {
 			System.out.println("Type not include in TypeList: " + text);
 		}
 		// ### PACKING
-		for (String packing : PackagingList.getValues()) {
+		for (String packing : PackagingListEnum.getValues()) {
 			if (text.contains(packing)) {
 				text = text.replace(packing, "");
 				cotation.setPackaging(packing);

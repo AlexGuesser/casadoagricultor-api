@@ -4,18 +4,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public enum TypeList {
+public enum TypeListEnum {
 
 	NORMAL("Normal"), ORGANICO("Organico");
 
 	private String type;
 
-	TypeList(String type) {
+	TypeListEnum(String type) {
 		this.type = type;
 	}
 
 	public static List<String> getValues() {
-		List<TypeList> enumList = Arrays.asList(TypeList.values());
+		List<TypeListEnum> enumList = Arrays.asList(TypeListEnum.values());
 		return enumList.stream().map(typeEnum -> typeEnum.type).collect(Collectors.toList());
 	}
 

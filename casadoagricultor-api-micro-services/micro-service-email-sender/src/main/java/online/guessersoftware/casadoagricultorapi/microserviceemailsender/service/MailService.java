@@ -17,7 +17,7 @@ public class MailService {
 
 	public boolean sendTestMail() {
 		log.info("Sending Test mail");
-		
+
 		Mail mail = Mail.build() //
 				.sender(Constants.MAIL_DEFAULT_SENDER) //
 				.recipients(Constants.MAIL_DEFAULT_RECEIVER) //
@@ -27,6 +27,11 @@ public class MailService {
 				.content("Mail Test Content", false); //
 
 		return emailSender.send(mail);
+	}
+
+	public void sendEmailToProcessingAdmin(Mail mail) {
+		log.info("Sending mail about processing cotation file.");
+		emailSender.send(mail);
 	}
 
 }

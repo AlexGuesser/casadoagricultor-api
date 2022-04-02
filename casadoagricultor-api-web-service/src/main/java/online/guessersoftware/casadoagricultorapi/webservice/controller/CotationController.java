@@ -1,6 +1,7 @@
 package online.guessersoftware.casadoagricultorapi.webservice.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -24,9 +25,12 @@ import online.guessersoftware.casadoagricultorapi.webservice.json.ProcessLocalCo
 import online.guessersoftware.casadoagricultorapi.webservice.processor.CotationProcessor;
 import online.guessersoftware.casadoagricultorapi.webservice.processor.ProcessLocalCotationFileRequest;
 import online.guessersoftware.casadoagricultorapi.webservice.processor.ProcessLocalCotationFileRequestBuilder;
+import online.guessersoftware.casadoagricultorapi.webservice.service.CotationFileService;
+import online.guessersoftware.casadoagricultorapi.webservice.service.CotationService;
 import online.guessersoftware.casadoagricultorapi.webservice.utils.CotationsDownloadRequest;
 import online.guessersoftware.casadoagricultorapi.webservice.utils.CotationsDownloadRequestBuilder;
 import online.guessersoftware.casadoagricultorapi.webservice.utils.DownloadUtils;
+import online.guessersoftware.casadoagricultorapi.webservice.valueobject.CotationValueObject;
 
 @Controller
 @RequestMapping(path = "/cotation")
@@ -37,11 +41,27 @@ public class CotationController {
 	@Autowired
 	private CotationProcessor cotationProcessor;
 
-	@RequestMapping(method = RequestMethod.GET, path = "/generate-cotations-for-ceasa-sc-by-url")
+	@Autowired
+	private CotationFileService cotationFileService;
+
+	@Autowired
+	private CotationService cotationService;
+
+	@RequestMapping(method = RequestMethod.GET, path = "")
 	@ResponseBody
-	public void createCotationsOfCeasaSCBy(@RequestParam(required = true) String url) {
-		cotationProcessor.processByUrl(url, CeasasEnum.SAO_JOSE_SC);
+	public ResponseEntity<List<CotationValueObject>> getCotations(@RequestParam(required = true) String day, @RequestParam(required = false) String ceasaName,
+			@RequestParam(required = true) int page, @RequestParam(required = true) int size) {
+		LocalDate dayLD = LocalDate.parse(day);
+		String ceasa = StringUtils.isBlank(ceasaName) ? CeasasEnum.SAO_JOSE_SC.getName() : ceasaName;
+		List<CotationValueObject> cotations = cotationService.getContationsBy(dayLD, ceasa, page, size);
+		return new ResponseEntity<List<CotationValueObject>>(cotations, HttpStatus.OK);
 	}
+
+//	@RequestMapping(method = RequestMethod.GET, path = "/generate-cotations-for-ceasa-sc-by-url")
+//	@ResponseBody
+//	public void createCotationsOfCeasaSCBy(@RequestParam(required = true) String url) {
+//		cotationProcessor.processByUrl(url, CeasasEnum.SAO_JOSE_SC);
+//	}
 
 	@RequestMapping(method = RequestMethod.POST, path = "/download-pdf-cotations-from-ceasa-sc-to-local-machine")
 	@ResponseBody
@@ -64,7 +84,7 @@ public class CotationController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, path = "/process--local-cotations-file")
+	@RequestMapping(method = RequestMethod.POST, path = "/process-local-cotations-file")
 	@ResponseBody
 	public ResponseEntity<String> processLocalCotationFileBy(@Valid @RequestBody(required = true) ProcessLocalCotationFileRequestJson request) {
 		log.info("Trying to proccess all ceasa sc pdfs using as request: " + request.toString());
@@ -72,10 +92,7 @@ public class CotationController {
 		LocalDate limitDate = LocalDate.parse(request.getToDay());
 		String basePath = StringUtils.isBlank(request.getBaseFolderPath()) ? Constants.DEFAULT_DESTINY_FOLDER : request.getBaseFolderPath();
 		while (currentDate.isBefore(limitDate) || currentDate.isEqual(limitDate)) {
-			String fullpath = basePath //
-					+ (currentDate.getYear() == 2018 ? "2018-1" : String.valueOf(currentDate.getYear())) //
-					+ currentDate.toString() //
-					+ Constants.DOT + Constants.PDF; //
+			String fullpath = concatenateFullPath(currentDate, basePath); //
 			ProcessLocalCotationFileRequest cotationFileRequest = //
 					ProcessLocalCotationFileRequestBuilder //
 							.usingThis() //
@@ -83,10 +100,23 @@ public class CotationController {
 							.date(currentDate) //
 							.ceasa(CeasasEnum.SAO_JOSE_SC) //
 							.build(); //
+			if (cotationFileService.cotationFileAlreadyProcessedSuccessfullyBy(cotationFileRequest)) {
+				log.info("Cotation already successfully processed by request: " + request.toString());
+				currentDate = currentDate.plusDays(1);
+				continue;
+			}
 			cotationProcessor.processLocalFile(cotationFileRequest);
 			currentDate = currentDate.plusDays(1);
 		}
 		return new ResponseEntity<String>("All good!", HttpStatus.OK);
+	}
+
+	private String concatenateFullPath(LocalDate currentDate, String basePath) {
+		return basePath //
+				+ (currentDate.getYear() == 2018 ? "2018-1" : String.valueOf(currentDate.getYear())) //
+				+ "/" //
+				+ currentDate.toString() //
+				+ Constants.DOT + Constants.PDF;
 	}
 
 }

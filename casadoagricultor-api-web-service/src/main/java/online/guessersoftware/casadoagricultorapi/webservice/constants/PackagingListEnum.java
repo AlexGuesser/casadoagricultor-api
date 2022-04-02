@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public enum PackagingList {
+public enum PackagingListEnum {
 
 	CAIXA("Caixa"), //
 	UNIDADE("Unidade"), //
@@ -19,12 +19,12 @@ public enum PackagingList {
 
 	private String packing;
 
-	private PackagingList(String packing) {
+	private PackagingListEnum(String packing) {
 		this.packing = packing;
 	}
 
 	public static List<String> getValues() {
-		List<PackagingList> enumList = Arrays.asList(PackagingList.values());
+		List<PackagingListEnum> enumList = Arrays.asList(PackagingListEnum.values());
 		return enumList.stream().map(packingEnum -> packingEnum.packing).collect(Collectors.toList());
 	}
 
