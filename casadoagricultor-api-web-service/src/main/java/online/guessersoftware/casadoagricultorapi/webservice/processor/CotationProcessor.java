@@ -76,7 +76,7 @@ public class CotationProcessor {
 			}
 			logAndSaveError(request, processResult, "Some exception while processing request: " + request + ". Exception: " + e.getMessage());
 		}
-		mailService.sendEmailToProcessingAdmin(createProcessingMail(request, processResult));
+		// mailService.sendEmailToProcessingAdmin(createProcessingMail(request, processResult));
 	}
 
 	private void logAndSaveError(ProcessLocalCotationFileRequest request, ProcessResult processResult, String errorLog) {

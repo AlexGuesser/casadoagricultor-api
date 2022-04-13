@@ -46,6 +46,8 @@ CREATE TABLE IF NOT EXISTS `casa_do_agricultor`.`product_and_variety` (
   `last_user` BIGINT(20) NOT NULL DEFAULT 2,
   `last_operation` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `name` VARCHAR(512) NOT NULL,
+  `name_2` varchar(512) DEFAULT NULL,
+  `name_3` varchar(512) DEFAULT NULL,	
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_product_and_variety_user`
     FOREIGN KEY (`last_user`)

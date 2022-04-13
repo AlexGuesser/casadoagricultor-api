@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.StringUtils;
+
 @Entity
 @Table(name = "product_and_variety")
 public class ProductAndVariety extends BaseModel {
@@ -15,7 +17,7 @@ public class ProductAndVariety extends BaseModel {
 	}
 
 	public ProductAndVariety(String name) {
-		this.name = name;
+		this.name = StringUtils.normalizeSpace(name);
 	}
 
 	public String getName() {
@@ -23,7 +25,7 @@ public class ProductAndVariety extends BaseModel {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = StringUtils.normalizeSpace(name);
 	}
 
 	@Override

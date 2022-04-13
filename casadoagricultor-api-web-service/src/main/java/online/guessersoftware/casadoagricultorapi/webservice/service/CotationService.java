@@ -3,6 +3,7 @@ package online.guessersoftware.casadoagricultorapi.webservice.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,8 @@ public class CotationService {
 	}
 
 	private ProductAndVariety retrieveOrCreateProductAndVariety(String name) {
-		ProductAndVariety product = productService.getProductAndVarietyByName(name);
+		name = StringUtils.normalizeSpace(name);
+		ProductAndVariety product = productService.getProductAndVarietyByNameOrName2OrName3(name);
 		if (product != null) {
 			return product;
 		}
