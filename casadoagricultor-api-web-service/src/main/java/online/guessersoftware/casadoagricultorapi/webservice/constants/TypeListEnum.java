@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public enum TypeListEnum {
 
-	NORMAL("Normal"), ORGANICO("Organico");
+	NORMAL("Normal"), ORGANICO("Organico"), CONVENCI("Convenci"), CONVENCIONAL("Convencional");
 
 	private String type;
 
