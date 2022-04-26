@@ -109,12 +109,11 @@
 			<artifactId>casadoagricultor-api-micro-service-email-sender</artifactId>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.twilio.sdk/twilio -->
 		<dependency>
-			<groupId>com.twilio.sdk</groupId>
-			<artifactId>twilio</artifactId>
-			<scope>compile</scope>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
 		</dependency>
+
 	</dependencies>
 
 	<build>
