@@ -11,7 +11,7 @@ public class QuartzFactory {
 	@Bean
 	public SchedulerFactoryBean schedulerFactoryBean() {
 		SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
-		schedulerFactoryBean.setConfigLocation(new ClassPathResource("quartz.properties"));
+		schedulerFactoryBean.setConfigLocation(new ClassPathResource("application.properties"));
 		return schedulerFactoryBean;
 	}
 

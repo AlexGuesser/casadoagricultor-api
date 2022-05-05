@@ -14,6 +14,35 @@
 		<java.version>1.8</java.version>
 	</properties>
 
+	<profiles>
+
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<profileName>dev</profileName>
+				<spring.datasource.username>test</spring.datasource.username>
+				<spring.datasource.password>test</spring.datasource.password>
+				<spring.datasource.url>jdbc:mysql://localhost/casa_do_agricultor</spring.datasource.url>
+				<quartzDataSource.URL>jdbc:mysql://localhost:3306/casa_do_agricultor_quartz</quartzDataSource.URL>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>live</id>
+			<properties>
+				<profileName>live</profileName>
+				<spring.datasource.username>root</spring.datasource.username>
+				<spring.datasource.password>7EL9MC69xte3qw2P</spring.datasource.password>
+				<spring.datasource.url>jdbc:mysql://10.104.96.3/casa_do_agricultor</spring.datasource.url>
+				<quartzDataSource.URL>jdbc:mysql://10.104.96.3:3306/casa_do_agricultor_quartz</quartzDataSource.URL>
+			</properties>
+		</profile>
+
+	</profiles>
+
 	<dependencies>
 
 		<dependency>

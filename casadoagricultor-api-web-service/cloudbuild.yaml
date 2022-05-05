@@ -1,0 +1,43 @@
+substitutions:
+  _CLOUD_RUN_SERVICE_NAME: casa-do-agricultor-api
+
+timeout: 4000s
+steps:
+
+  # Generate a new .jar using the informed profile
+  - id: mvn clean install
+    name: adoptopenjdk/maven-openjdk8:latest
+    args: [ 'mvn','clean','install', '-P$_PROFILE','deploy']
+
+  # Do build
+  - id: casa-do-agricultor-api build
+    name: 'gcr.io/cloud-builders/docker' 
+    args:
+      [
+          'build',
+          '-t',
+          'gcr.io/$PROJECT_ID/_CLOUD_RUN_SERVICE_NAME:latest',
+          '-f',
+          './Dockerfile',
+          '.',
+      ]
+    timeout: 3200s
+
+  # Push tag latest
+  - id: casa-do-agricultor-api push
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/faq-api-$_PROFILE:latest'
+
+  # Update cloud run service image
+  - id: update cloud run service
+    name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args: [
+        'gcloud', 'beta', 'run', 'services',
+        'update', '$_CLOUD_RUN_SERVICE_NAME',
+        '--platform', 'managed',
+        '--image', 'gcr.io/$PROJECT_ID/$_CLOUD_RUN_SERVICE_NAME-$_PROFILE:latest',
+        '--region', 'southamerica-east1',
+        '--project', '$PROJECT_ID'
+    ]
