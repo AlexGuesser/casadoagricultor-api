@@ -7,7 +7,7 @@ steps:
   # Generate a new .jar using the informed profile
   - id: mvn clean install
     name: adoptopenjdk/maven-openjdk8:latest
-    args: [ 'mvn','clean','install', '-P$_PROFILE','deploy']
+    args: [ 'mvn','clean','install', '-Plive']
 
   # Do build
   - id: casa-do-agricultor-api build
