@@ -16,7 +16,7 @@ steps:
       [
           'build',
           '-t',
-          'gcr.io/$PROJECT_ID/_CLOUD_RUN_SERVICE_NAME:latest',
+          'gcr.io/$PROJECT_ID/$_CLOUD_RUN_SERVICE_NAME:latest',
           '-f',
           './Dockerfile',
           '.',
@@ -28,7 +28,7 @@ steps:
     name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'gcr.io/$PROJECT_ID/faq-api-$_PROFILE:latest'
+      - 'gcr.io/$PROJECT_ID/$_CLOUD_RUN_SERVICE_NAME:latest'
 
   # Update cloud run service image
   - id: update cloud run service
@@ -37,7 +37,7 @@ steps:
         'gcloud', 'beta', 'run', 'services',
         'update', '$_CLOUD_RUN_SERVICE_NAME',
         '--platform', 'managed',
-        '--image', 'gcr.io/$PROJECT_ID/$_CLOUD_RUN_SERVICE_NAME-$_PROFILE:latest',
+        '--image', 'gcr.io/$PROJECT_ID/$_CLOUD_RUN_SERVICE_NAME:latest',
         '--region', 'southamerica-east1',
         '--project', '$PROJECT_ID'
     ]
