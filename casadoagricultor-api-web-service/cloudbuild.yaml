@@ -18,7 +18,7 @@ steps:
           '-t',
           'gcr.io/$PROJECT_ID/$_CLOUD_RUN_SERVICE_NAME:latest',
           '-f',
-          './Dockerfile',
+          './casadoagricultor-api-web-service/Dockerfile',
           '.',
       ]
     timeout: 3200s
