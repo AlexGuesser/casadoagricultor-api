@@ -1,6 +1,6 @@
 package online.guessersoftware.casadoagricultorapi.webservice.transformer;
 
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,12 +40,10 @@ public class CotationTransformer {
 
 	private static String adjustCommonWeight(float commonWeight) {
 		try {
-			DecimalFormat formatter = new DecimalFormat("#,00");
-			return formatter.format(commonWeight);
-			// return StringUtils.replace(formatter.format(commonWeight), ".", ",");
+			return BigDecimal.valueOf(commonWeight).setScale(2, BigDecimal.ROUND_HALF_EVEN).toString();
 		} catch (Exception e) {
-			System.out.println("Exception when adjusting common weight: " + e.getMessage());
-			return "0,00";
+			System.out.println("Error while adjusting commmonWeight: " + commonWeight + ".Exception: " + e.getMessage());
+			return String.valueOf(commonWeight);
 		}
 	}
 
