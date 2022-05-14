@@ -1,5 +1,6 @@
 package online.guessersoftware.casadoagricultorapi.webservice.transformer;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,11 +31,22 @@ public class CotationTransformer {
 		cVO.setType(adjustType(c.getType()));
 		cVO.setOrigin(c.getOrigin());
 		cVO.setPackaging(c.getPackaging());
-		cVO.setCommonWeight(StringUtils.replace(String.valueOf(c.getCommunWeight()), ".", ","));
+		cVO.setCommonWeight(adjustCommonWeight(c.getCommunWeight()));
 		cVO.setPriceValueObject(PriceTransformer.transformModelToVO(c.getPrice()));
 		cVO.setProductAndVarietyValueObject(new ProductAndVarietyValueObject(c.getProductAndVariety().getName()));
 		cVO.setCeasaName(c.getCotationFile().getCeasa().getName());
 		return cVO;
+	}
+
+	private static String adjustCommonWeight(float commonWeight) {
+		try {
+			DecimalFormat formatter = new DecimalFormat("#,00");
+			return formatter.format(commonWeight);
+			// return StringUtils.replace(formatter.format(commonWeight), ".", ",");
+		} catch (Exception e) {
+			System.out.println("Exception when adjusting common weight: " + e.getMessage());
+			return "0,00";
+		}
 	}
 
 	private static String adjustType(String type) {
