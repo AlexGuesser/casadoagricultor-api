@@ -3,7 +3,7 @@ package online.guessersoftware.casadoagricultorapi.webservice.transformer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import online.guessersoftware.casadoagricultorapi.webservice.model.Cotation;
 import online.guessersoftware.casadoagricultorapi.webservice.valueobject.CotationValueObject;
@@ -27,7 +27,7 @@ public class CotationTransformer {
 		CotationValueObject cVO = new CotationValueObject();
 		cVO.setFromDay(c.getFromDay());
 		cVO.setClassification(c.getClassification());
-		cVO.setType(c.getType());
+		cVO.setType(adjustType(c.getType()));
 		cVO.setOrigin(c.getOrigin());
 		cVO.setPackaging(c.getPackaging());
 		cVO.setCommonWeight(StringUtils.replace(String.valueOf(c.getCommunWeight()), ".", ","));
@@ -35,6 +35,23 @@ public class CotationTransformer {
 		cVO.setProductAndVarietyValueObject(new ProductAndVarietyValueObject(c.getProductAndVariety().getName()));
 		cVO.setCeasaName(c.getCotationFile().getCeasa().getName());
 		return cVO;
+	}
+
+	private static String adjustType(String type) {
+		if (StringUtils.isBlank(type)) {
+			return "";
+		}
+		switch (type) {
+
+		case "Convenci":
+			return "Convencional";
+
+		case "Organico":
+			return "Orgânico";
+
+		default:
+			return type;
+		}
 	}
 
 	public static List<CotationValueObject> transformModelToVO(List<Cotation> cotations) {

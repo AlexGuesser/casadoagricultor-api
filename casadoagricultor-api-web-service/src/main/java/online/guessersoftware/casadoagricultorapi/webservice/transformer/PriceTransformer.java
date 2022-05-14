@@ -11,20 +11,29 @@ public class PriceTransformer {
 
 	public static Price transformVOToModel(PriceValueObject priceVO) {
 		Price price = new Price();
-		price.setMinimum(new BigDecimal(StringUtils.replace(priceVO.getMinimunPrice(), ",", ".")));
-		price.setCommon(new BigDecimal(StringUtils.replace(priceVO.getCommonPrice(), ",", ".")));
-		price.setMaximum(new BigDecimal(StringUtils.replace(priceVO.getMaximunPrice(), ",", ".")));
-		price.setKgCommon(new BigDecimal(StringUtils.replace(priceVO.getCommonPricePerKg(), ",", ".")));
+		// BIG DECIMAL NEEDS . AS SEPARATOR
+		price.setMinimum(new BigDecimal(adjustPriceToUseDot(priceVO.getMinimunPrice())));
+		price.setCommon(new BigDecimal(adjustPriceToUseDot(priceVO.getCommonPrice())));
+		price.setMaximum(new BigDecimal(adjustPriceToUseDot(priceVO.getMaximunPrice())));
+		price.setKgCommon(new BigDecimal(adjustPriceToUseDot(priceVO.getCommonPricePerKg())));
 		return price;
 	}
 
 	public static PriceValueObject transformModelToVO(Price price) {
 		PriceValueObject pVO = new PriceValueObject();
-		pVO.setMinimunPrice(StringUtils.replace(String.valueOf(price.getMinimum()), ".", ","));
-		pVO.setCommonPrice(StringUtils.replace(String.valueOf(price.getCommon()), ".", ","));
-		pVO.setMaximunPrice(StringUtils.replace(String.valueOf(price.getMaximum()), ".", ","));
-		pVO.setCommonPricePerKg(StringUtils.replace(String.valueOf(price.getKgCommon()), ".", ","));
+		pVO.setMinimunPrice(adjustPriceToUseComma(price.getMinimum()));
+		pVO.setCommonPrice(adjustPriceToUseComma(price.getCommon()));
+		pVO.setMaximunPrice(adjustPriceToUseComma(price.getMaximum()));
+		pVO.setCommonPricePerKg(adjustPriceToUseComma(price.getKgCommon()));
 		return pVO;
+	}
+
+	private static String adjustPriceToUseComma(BigDecimal price) {
+		return StringUtils.replace(String.valueOf(price), ".", ",");
+	}
+
+	private static String adjustPriceToUseDot(String price) {
+		return StringUtils.replace(String.valueOf(price), ",", ".");
 	}
 
 }
