@@ -1,9 +1,12 @@
 package online.guessersoftware.casadoagricultorapi.webservice.service;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.springframework.stereotype.Service;
 
 import com.google.api.gax.paging.Page;
@@ -30,12 +33,22 @@ public class StorageService {
 			System.out.println(blob.getName());
 		}
 	}
-	
-	public void upload(InputStream is,String fileName, String directory) throws IOException {
+
+	public void upload(InputStream is, String fileName, String directory) throws IOException {
 		Storage storage = StorageOptions.getDefaultInstance().getService();
-		BlobId blobId = BlobId.of(COTATIONS_BUCKET,directory + fileName);
+		BlobId blobId = BlobId.of(COTATIONS_BUCKET, directory + fileName);
 		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 		storage.createFrom(blobInfo, is);
+	}
+
+	public PDDocument getPDF() throws IOException {
+		Storage storage = StorageOptions.getDefaultInstance().getService();
+		BlobId blobId = BlobId.of(COTATIONS_BUCKET, "2022/2022-06-03.pdf");
+		Blob blob = storage.get(blobId);
+		InputStream myInputStream = new ByteArrayInputStream(blob.getContent());
+		BufferedInputStream fileParse = new BufferedInputStream(myInputStream);
+		PDDocument document = PDDocument.load(fileParse);
+		return document;
 	}
 
 }

@@ -142,6 +142,7 @@ public class CotationController {
 		// NO COTATIONS FOUND FOR THIS SPECIFIC DAY( WEEKEND? HOLIDAYS? )
 		if (pdf == null) {
 			mailService.sendEmailToProcessingAdmin(createNoCotationFoundMail(today.toString()));
+			return new ResponseEntity<String>("No cotation file found!", HttpStatus.OK);
 		}
 		String fullpath = concatenateFullPath(today, Constants.DEFAULT_BUCKET_FOLDER); //
 		ProcessCotationFileRequest cotationFileRequest = //
