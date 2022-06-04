@@ -31,7 +31,7 @@ public class StorageController {
 	@ResponseBody
 	public ResponseEntity<String> getPdf() {
 		try {
-			PDDocument pdf = storageService.getPDF();
+			PDDocument pdf = storageService.getPDF("2022/2022-06-03.pdf");
 			System.out.println(pdf);
 			return new ResponseEntity<String>("OK", HttpStatus.OK);
 		} catch (IOException e) {

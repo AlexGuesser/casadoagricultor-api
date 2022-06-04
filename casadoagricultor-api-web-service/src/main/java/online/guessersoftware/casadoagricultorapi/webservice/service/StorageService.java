@@ -41,10 +41,13 @@ public class StorageService {
 		storage.createFrom(blobInfo, is);
 	}
 
-	public PDDocument getPDF() throws IOException {
+	public PDDocument getPDF(String fileFullNameOnBucket) throws IOException {
 		Storage storage = StorageOptions.getDefaultInstance().getService();
-		BlobId blobId = BlobId.of(COTATIONS_BUCKET, "2022/2022-06-03.pdf");
+		BlobId blobId = BlobId.of(COTATIONS_BUCKET, fileFullNameOnBucket);
 		Blob blob = storage.get(blobId);
+		if (blob == null) {
+			return null;
+		}
 		InputStream myInputStream = new ByteArrayInputStream(blob.getContent());
 		BufferedInputStream fileParse = new BufferedInputStream(myInputStream);
 		PDDocument document = PDDocument.load(fileParse);

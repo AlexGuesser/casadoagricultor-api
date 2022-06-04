@@ -31,6 +31,7 @@ import online.guessersoftware.casadoagricultorapi.webservice.processor.ProcessCo
 import online.guessersoftware.casadoagricultorapi.webservice.processor.ProcessCotationFileRequestBuilder;
 import online.guessersoftware.casadoagricultorapi.webservice.service.CotationFileService;
 import online.guessersoftware.casadoagricultorapi.webservice.service.CotationService;
+import online.guessersoftware.casadoagricultorapi.webservice.service.StorageService;
 import online.guessersoftware.casadoagricultorapi.webservice.utils.CotationsDownloadRequest;
 import online.guessersoftware.casadoagricultorapi.webservice.utils.CotationsDownloadRequestBuilder;
 import online.guessersoftware.casadoagricultorapi.webservice.utils.DownloadUtils;
@@ -58,6 +59,9 @@ public class CotationController {
 
 	@Autowired
 	private MailService mailService;
+
+	@Autowired
+	private StorageService storageService;
 
 	@RequestMapping(method = RequestMethod.GET, path = "")
 	@ResponseBody
@@ -199,5 +203,44 @@ public class CotationController {
 
 	public static void main(String[] args) {
 		System.out.println(LocalDate.now());
+	}
+
+	@RequestMapping(method = RequestMethod.POST, path = "/process-google-storage-cotations-file")
+	@ResponseBody
+	public ResponseEntity<String> processGoogleStorageCotationFileBy(@Valid @RequestBody(required = true) ProcessLocalCotationFileRequestJson request) {
+		log.info("Trying to proccess all ceasa sc pdfs using as request: " + request.toString());
+		LocalDate currentDate = LocalDate.parse(request.getFromDay());
+		LocalDate limitDate = LocalDate.parse(request.getToDay());
+		String basePath = Constants.DEFAULT_BUCKET_FOLDER;
+		while (currentDate.isBefore(limitDate) || currentDate.isEqual(limitDate)) {
+			String fullpath = concatenateFullPath(currentDate, basePath); //
+			ProcessCotationFileRequest cotationFileRequest = //
+					ProcessCotationFileRequestBuilder //
+							.usingThis() //
+							.fileName(concatenateFileName(currentDate)) //
+							.fileFullPath(fullpath) //
+							.url(fullpath) //
+							.date(currentDate) //
+							.ceasa(CeasasEnum.SAO_JOSE_SC) //
+							.local(false) //
+							.build(); //
+			if (cotationFileService.cotationFileAlreadyProcessedSuccessfullyBy(cotationFileRequest)) {
+				log.info("Cotation already successfully processed by request: " + request.toString());
+				currentDate = currentDate.plusDays(1);
+				continue;
+			}
+			PDDocument pdf = null;
+			try {
+				pdf = storageService.getPDF(concatenateFullPath(currentDate, ""));
+				if (pdf != null) {
+					cotationProcessor.processFile(pdf, cotationFileRequest);
+				}
+				currentDate = currentDate.plusDays(1);
+			} catch (IOException e) {
+				currentDate = currentDate.plusDays(1);
+				log.error("Some error while retriving pdf from bucket. Exception: " + e.getMessage());
+			}
+		}
+		return new ResponseEntity<String>("All good!", HttpStatus.OK);
 	}
 }
