@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import online.guessersoftware.casadoagricultorapi.common.constants.Constants;
 import online.guessersoftware.casadoagricultorapi.webservice.model.CotationFile;
 import online.guessersoftware.casadoagricultorapi.webservice.model.ProcessingErrorsWarningsEnum;
-import online.guessersoftware.casadoagricultorapi.webservice.processor.ProcessLocalCotationFileRequest;
+import online.guessersoftware.casadoagricultorapi.webservice.processor.ProcessCotationFileRequest;
 import online.guessersoftware.casadoagricultorapi.webservice.repository.CotationFileRepository;
 
 @Service
@@ -31,22 +31,22 @@ public class CotationFileService {
 	@Autowired
 	private ProcessingErrorsWarningsService errorsWarningsService;
 
-	public void saveFileProcessedWithError(ProcessLocalCotationFileRequest request, List<ProcessingErrorsWarningsEnum> errorsList) {
+	public void saveFileProcessedWithError(ProcessCotationFileRequest request, List<ProcessingErrorsWarningsEnum> errorsList) {
 		saveFileProcessed(request, false, errorsList);
 	}
 
-	public CotationFile saveFileProcessedWithSuccess(ProcessLocalCotationFileRequest request, List<ProcessingErrorsWarningsEnum> errorsList) {
+	public CotationFile saveFileProcessedWithSuccess(ProcessCotationFileRequest request, List<ProcessingErrorsWarningsEnum> errorsList) {
 		return saveFileProcessed(request, true, errorsList);
 	}
 
-	private CotationFile saveFileProcessed(ProcessLocalCotationFileRequest request, boolean success, List<ProcessingErrorsWarningsEnum> errorsList) {
+	private CotationFile saveFileProcessed(ProcessCotationFileRequest request, boolean success, List<ProcessingErrorsWarningsEnum> errorsList) {
 		CotationFile newCotationFile = new CotationFile();
 		newCotationFile.setSuccessfullyProcessed(success);
-		newCotationFile.setFilename(request.getFileFullPath());
+		newCotationFile.setFilename(request.getFileName());
 		newCotationFile.setFormat(Constants.PDF);
-		newCotationFile.setUrl(request.getFileFullPath());
+		newCotationFile.setUrl(request.getUrl());
 		newCotationFile.setStorageReference(request.getFileFullPath());
-		newCotationFile.setSavedLocallyOrCloud(Constants.LOCAL);
+		newCotationFile.setSavedLocallyOrCloud(request.isLocal() ? Constants.LOCAL : Constants.CLOUD);
 		newCotationFile.setCeasa(ceasaService.getCeasaByName(request.getCeasa().getName()));
 		newCotationFile = baseModelService.setLastUserAsTechJobProcessorUser(newCotationFile);
 		newCotationFile.setErrorsAndWarnings(errorsWarningsService.transformEnumListToModelList(errorsList));
@@ -54,9 +54,9 @@ public class CotationFileService {
 		return cotationFileRepository.save(newCotationFile);
 	}
 
-	public boolean cotationFileAlreadyProcessedSuccessfullyBy(ProcessLocalCotationFileRequest request) {
+	public boolean cotationFileAlreadyProcessedSuccessfullyBy(ProcessCotationFileRequest request) {
 		List<CotationFile> cotationFilesAlreadyProcessedSuccessfully = cotationFileRepository.cotationFilesAlreadyProcessedSuccessfully( //
-				request.getFileFullPath(), //
+				request.getFileName(), //
 				ceasaService.getCeasaByName(request.getCeasa().getName()).getId()); //
 		return CollectionUtils.isNotEmpty(cotationFilesAlreadyProcessedSuccessfully);
 	}

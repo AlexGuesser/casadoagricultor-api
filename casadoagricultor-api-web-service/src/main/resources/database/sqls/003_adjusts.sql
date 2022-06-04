@@ -1,0 +1,1 @@
+update cotation_file set filename = SUBSTRING(filename,49,14);

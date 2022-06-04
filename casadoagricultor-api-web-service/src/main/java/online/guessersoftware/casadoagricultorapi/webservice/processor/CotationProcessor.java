@@ -59,7 +59,26 @@ public class CotationProcessor {
 //		}
 //	}
 
-	public void processLocalFile(ProcessLocalCotationFileRequest request) {
+	public void processFile(PDDocument document, ProcessCotationFileRequest request) {
+		ProcessResult processResult = new ProcessResult();
+		try {
+			processResult = processPDDocument(document, request.getCeasa(), processResult);
+			if (processResult.hadSomeError()) {
+				cotationFileService.saveFileProcessedWithError(request, processResult.getErrorsAndWarnings());
+			} else {
+				CotationFile cotationFile = cotationFileService.saveFileProcessedWithSuccess(request, processResult.getErrorsAndWarnings());
+				cotationService.saveCotationsValueObject(processResult.getCotationsVO(), cotationFile);
+			}
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				logAndSaveError(request, processResult, "File not found? Exception: " + e.getMessage());
+			}
+			logAndSaveError(request, processResult, "Some exception while processing request: " + request + ". Exception: " + e.getMessage());
+		}
+		mailService.sendEmailToProcessingAdmin(createProcessingMail(request, processResult));
+	}
+
+	public void processLocalFile(ProcessCotationFileRequest request) {
 		ProcessResult processResult = new ProcessResult();
 		try {
 			PDDocument document = createPDDocumentByLocalFile(request.getFileFullPath());
@@ -76,17 +95,17 @@ public class CotationProcessor {
 			}
 			logAndSaveError(request, processResult, "Some exception while processing request: " + request + ". Exception: " + e.getMessage());
 		}
-		// mailService.sendEmailToProcessingAdmin(createProcessingMail(request, processResult));
+		mailService.sendEmailToProcessingAdmin(createProcessingMail(request, processResult));
 	}
 
-	private void logAndSaveError(ProcessLocalCotationFileRequest request, ProcessResult processResult, String errorLog) {
+	private void logAndSaveError(ProcessCotationFileRequest request, ProcessResult processResult, String errorLog) {
 		log.error(errorLog);
 		processResult.addErrorOrWarning(ProcessingErrorsWarningsEnum.FILE_NOT_FOUND_ERROR);
 		processResult.addLogError(errorLog);
 		cotationFileService.saveFileProcessedWithError(request, processResult.getErrorsAndWarnings());
 	}
 
-	private Mail createProcessingMail(ProcessLocalCotationFileRequest request, ProcessResult processResult) {
+	private Mail createProcessingMail(ProcessCotationFileRequest request, ProcessResult processResult) {
 		Mail mail = Mail.build() //
 				.sender(Constants.MAIL_DEFAULT_SENDER) //
 				.recipients(Constants.MAIL_PROCESSING_ADMIN_RECEIVER) //
@@ -95,7 +114,7 @@ public class CotationProcessor {
 		return mail;
 	}
 
-	private String buildContentForProcessingMail(ProcessLocalCotationFileRequest request, ProcessResult processResult) {
+	private String buildContentForProcessingMail(ProcessCotationFileRequest request, ProcessResult processResult) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("<hr>");
 		stringBuilder.append("<h2> File:" + request.getFileFullPath() + "</h2>");
@@ -114,7 +133,7 @@ public class CotationProcessor {
 		return stringBuilder.toString();
 	}
 
-	private String buildSubjectForProcessingMail(ProcessLocalCotationFileRequest request) {
+	private String buildSubjectForProcessingMail(ProcessCotationFileRequest request) {
 		return Constants.MAIL_PROCESSING_SUBJECT_BASE + request.getCeasa().getName() + " - " + request.getDate();
 	}
 
