@@ -43,8 +43,8 @@ public class CotationService {
 		Cotation newCotation = CotationTransformer.transformVOToModel(cVO);
 		newCotation.setCotationFile(cotationFile);
 		newCotation.setProductAndVariety(retrieveOrCreateProductAndVariety(cVO.getProductAndVarietyValueObject().getName()));
-		newCotation.setPrice(baseModelService.setLastUserAsTechJobProcessorUser(newCotation.getPrice()));
-		newCotation = baseModelService.setLastUserAsTechJobProcessorUser(newCotation);
+		newCotation.setPrice(baseModelService.setMetaInfo(newCotation.getPrice()));
+		newCotation = baseModelService.setMetaInfo(newCotation);
 		logger.info("Saving new cotation: " + newCotation);
 		cotationRepository.save(newCotation);
 	}
@@ -57,7 +57,7 @@ public class CotationService {
 		}
 		logger.info("Saving new product and variety: " + name);
 		ProductAndVariety newProductAndVariety = new ProductAndVariety(name);
-		newProductAndVariety = baseModelService.setLastUserAsTechJobProcessorUser(newProductAndVariety);
+		newProductAndVariety = baseModelService.setMetaInfo(newProductAndVariety);
 		return productService.createProductAndVariety(newProductAndVariety);
 	}
 

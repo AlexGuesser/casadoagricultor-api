@@ -48,7 +48,7 @@ public class CotationFileService {
 		newCotationFile.setStorageReference(request.getFileFullPath());
 		newCotationFile.setSavedLocallyOrCloud(request.isLocal() ? Constants.LOCAL : Constants.CLOUD);
 		newCotationFile.setCeasa(ceasaService.getCeasaByName(request.getCeasa().getName()));
-		newCotationFile = baseModelService.setLastUserAsTechJobProcessorUser(newCotationFile);
+		newCotationFile = baseModelService.setMetaInfo(newCotationFile);
 		newCotationFile.setErrorsAndWarnings(errorsWarningsService.transformEnumListToModelList(errorsList));
 		log.info("Saving new cotationFile: " + newCotationFile);
 		return cotationFileRepository.save(newCotationFile);
