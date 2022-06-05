@@ -1,5 +1,6 @@
 package online.guessersoftware.casadoagricultorapi.webservice.model;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +23,9 @@ public class CotationFile extends BaseModel {
 
 	@Column(name = "filename")
 	private String filename;
+
+	@Column(name = "from_day")
+	private LocalDate fromDay;
 
 	@Column(name = "format")
 	private String format;
@@ -49,15 +53,18 @@ public class CotationFile extends BaseModel {
 	public CotationFile() {
 	}
 
-	public CotationFile(boolean successfullyProcessed, String filename, String format, String url, String storageReference, String savedLocallyOrCloud,
-			Ceasa ceasa) {
+	public CotationFile(boolean successfullyProcessed, String filename, LocalDate fromDay, String format, String url, String storageReference,
+			String savedLocallyOrCloud, Ceasa ceasa, Set<ProcessingErrorsWarnings> errorsAndWarnings) {
+		super();
 		this.successfullyProcessed = successfullyProcessed;
 		this.filename = filename;
+		this.fromDay = fromDay;
 		this.format = format;
 		this.url = url;
 		this.storageReference = storageReference;
 		this.savedLocallyOrCloud = savedLocallyOrCloud;
 		this.ceasa = ceasa;
+		this.errorsAndWarnings = errorsAndWarnings;
 	}
 
 	public boolean isSuccessfullyProcessed() {
@@ -74,6 +81,14 @@ public class CotationFile extends BaseModel {
 
 	public void setFilename(String filename) {
 		this.filename = filename;
+	}
+
+	public LocalDate getFromDay() {
+		return fromDay;
+	}
+
+	public void setFromDay(LocalDate fromDay) {
+		this.fromDay = fromDay;
 	}
 
 	public String getFormat() {
@@ -133,8 +148,10 @@ public class CotationFile extends BaseModel {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((ceasa == null) ? 0 : ceasa.hashCode());
+		result = prime * result + ((errorsAndWarnings == null) ? 0 : errorsAndWarnings.hashCode());
 		result = prime * result + ((filename == null) ? 0 : filename.hashCode());
 		result = prime * result + ((format == null) ? 0 : format.hashCode());
+		result = prime * result + ((fromDay == null) ? 0 : fromDay.hashCode());
 		result = prime * result + ((savedLocallyOrCloud == null) ? 0 : savedLocallyOrCloud.hashCode());
 		result = prime * result + ((storageReference == null) ? 0 : storageReference.hashCode());
 		result = prime * result + (successfullyProcessed ? 1231 : 1237);
@@ -156,6 +173,11 @@ public class CotationFile extends BaseModel {
 				return false;
 		} else if (!ceasa.equals(other.ceasa))
 			return false;
+		if (errorsAndWarnings == null) {
+			if (other.errorsAndWarnings != null)
+				return false;
+		} else if (!errorsAndWarnings.equals(other.errorsAndWarnings))
+			return false;
 		if (filename == null) {
 			if (other.filename != null)
 				return false;
@@ -165,6 +187,11 @@ public class CotationFile extends BaseModel {
 			if (other.format != null)
 				return false;
 		} else if (!format.equals(other.format))
+			return false;
+		if (fromDay == null) {
+			if (other.fromDay != null)
+				return false;
+		} else if (!fromDay.equals(other.fromDay))
 			return false;
 		if (savedLocallyOrCloud == null) {
 			if (other.savedLocallyOrCloud != null)
@@ -188,8 +215,8 @@ public class CotationFile extends BaseModel {
 
 	@Override
 	public String toString() {
-		return "CotationFile [successfullyProcessed=" + successfullyProcessed + ", filename=" + filename + ", format=" + format + ", url=" + url
-				+ ", storageReference=" + storageReference + ", savedLocallyOrCloud=" + savedLocallyOrCloud + ", ceasa=" + ceasa + "]";
+		return "CotationFile [successfullyProcessed=" + successfullyProcessed + ", filename=" + filename + ", fromDay=" + fromDay + ", format=" + format
+				+ ", url=" + url + ", storageReference=" + storageReference + ", savedLocallyOrCloud=" + savedLocallyOrCloud + ", ceasa=" + ceasa
+				+ ", errorsAndWarnings=" + errorsAndWarnings + "]";
 	}
-
 }

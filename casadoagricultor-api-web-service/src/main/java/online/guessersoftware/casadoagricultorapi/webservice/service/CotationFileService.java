@@ -1,5 +1,6 @@
 package online.guessersoftware.casadoagricultorapi.webservice.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -43,6 +44,7 @@ public class CotationFileService {
 		CotationFile newCotationFile = new CotationFile();
 		newCotationFile.setSuccessfullyProcessed(success);
 		newCotationFile.setFilename(request.getFileName());
+		newCotationFile.setFromDay(request.getDate());
 		newCotationFile.setFormat(Constants.PDF);
 		newCotationFile.setUrl(request.getUrl());
 		newCotationFile.setStorageReference(request.getFileFullPath());
@@ -59,6 +61,10 @@ public class CotationFileService {
 				request.getFileName(), //
 				ceasaService.getCeasaByName(request.getCeasa().getName()).getId()); //
 		return CollectionUtils.isNotEmpty(cotationFilesAlreadyProcessedSuccessfully);
+	}
+
+	public LocalDate closestCotationDayOf(LocalDate desiredDate) {
+		return cotationFileRepository.closestCotationDayOf(desiredDate);
 	}
 
 }

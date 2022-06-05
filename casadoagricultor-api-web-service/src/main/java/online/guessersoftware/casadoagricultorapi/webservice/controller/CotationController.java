@@ -35,6 +35,7 @@ import online.guessersoftware.casadoagricultorapi.webservice.service.StorageServ
 import online.guessersoftware.casadoagricultorapi.webservice.utils.CotationsDownloadRequest;
 import online.guessersoftware.casadoagricultorapi.webservice.utils.CotationsDownloadRequestBuilder;
 import online.guessersoftware.casadoagricultorapi.webservice.utils.DownloadUtils;
+import online.guessersoftware.casadoagricultorapi.webservice.valueobject.CotationResultValueObject;
 import online.guessersoftware.casadoagricultorapi.webservice.valueobject.CotationValueObject;
 
 @Controller
@@ -65,12 +66,14 @@ public class CotationController {
 
 	@RequestMapping(method = RequestMethod.GET, path = "")
 	@ResponseBody
-	public ResponseEntity<List<CotationValueObject>> getCotations(@RequestParam(required = true) String day, @RequestParam(required = false) String ceasaName,
+	public ResponseEntity<CotationResultValueObject> getCotations(@RequestParam(required = true) String day, @RequestParam(required = false) String ceasaName,
 			@RequestParam(required = true) int page, @RequestParam(required = true) int size) {
 		LocalDate dayLD = LocalDate.parse(day);
+		LocalDate closestCotationDayOf = cotationFileService.closestCotationDayOf(dayLD);
 		String ceasa = StringUtils.isBlank(ceasaName) ? CeasasEnum.SAO_JOSE_SC.getName() : ceasaName;
-		List<CotationValueObject> cotations = cotationService.getContationsBy(dayLD, ceasa, page, size);
-		return new ResponseEntity<List<CotationValueObject>>(cotations, HttpStatus.OK);
+		List<CotationValueObject> cotations = cotationService.getContationsBy(closestCotationDayOf, ceasa, page, size);
+		CotationResultValueObject result = new CotationResultValueObject(dayLD, closestCotationDayOf, dayLD.equals(closestCotationDayOf), cotations);
+		return new ResponseEntity<CotationResultValueObject>(result, HttpStatus.OK);
 	}
 
 //	@RequestMapping(method = RequestMethod.GET, path = "/generate-cotations-for-ceasa-sc-by-url")
@@ -167,44 +170,6 @@ public class CotationController {
 		return new ResponseEntity<String>("All good!", HttpStatus.OK);
 	}
 
-	private String concatenateFullPath(LocalDate currentDate, String basePath) {
-		return basePath //
-				+ (currentDate.getYear() == 2018 ? "2018-1" : String.valueOf(currentDate.getYear())) //
-				+ "/" //
-				+ currentDate.toString() //
-				+ Constants.DOT + Constants.PDF;
-	}
-
-	private String concatenateFileName(LocalDate currentDate) {
-		return currentDate.toString() //
-				+ Constants.DOT + Constants.PDF;
-	}
-
-	private Mail createNoCotationFoundMail(String day) {
-		Mail mail = Mail.build() //
-				.sender(Constants.MAIL_DEFAULT_SENDER) //
-				.recipients(Constants.MAIL_PROCESSING_ADMIN_RECEIVER) //
-				.subject(buildSubjectForNoCotationFoundMail()) //
-				.content(buildContentForNoCotationFoundMail(day), true); //
-		return mail;
-	}
-
-	private String buildContentForNoCotationFoundMail(String day) {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("<hr>");
-		stringBuilder.append("<h2> No cotation was found for day: " + day + "</h2>");
-
-		return stringBuilder.toString();
-	}
-
-	private String buildSubjectForNoCotationFoundMail() {
-		return Constants.MAIL_PROCESSING_SUBJECT_BASE_NO_COTATION;
-	}
-
-	public static void main(String[] args) {
-		System.out.println(LocalDate.now());
-	}
-
 	@RequestMapping(method = RequestMethod.POST, path = "/process-google-storage-cotations-file")
 	@ResponseBody
 	public ResponseEntity<String> processGoogleStorageCotationFileBy(@Valid @RequestBody(required = true) ProcessLocalCotationFileRequestJson request) {
@@ -242,5 +207,46 @@ public class CotationController {
 			}
 		}
 		return new ResponseEntity<String>("All good!", HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/procedure-teste")
+	@ResponseBody
+	public ResponseEntity<LocalDate> testProcedure() {
+		LocalDate closestCotationDayOf = cotationFileService.closestCotationDayOf(LocalDate.of(2020, 1, 12));
+		return new ResponseEntity<LocalDate>(closestCotationDayOf, HttpStatus.OK);
+	}
+
+	private String concatenateFullPath(LocalDate currentDate, String basePath) {
+		return basePath //
+				+ (currentDate.getYear() == 2018 ? "2018-1" : String.valueOf(currentDate.getYear())) //
+				+ "/" //
+				+ currentDate.toString() //
+				+ Constants.DOT + Constants.PDF;
+	}
+
+	private String concatenateFileName(LocalDate currentDate) {
+		return currentDate.toString() //
+				+ Constants.DOT + Constants.PDF;
+	}
+
+	private Mail createNoCotationFoundMail(String day) {
+		Mail mail = Mail.build() //
+				.sender(Constants.MAIL_DEFAULT_SENDER) //
+				.recipients(Constants.MAIL_PROCESSING_ADMIN_RECEIVER) //
+				.subject(buildSubjectForNoCotationFoundMail()) //
+				.content(buildContentForNoCotationFoundMail(day), true); //
+		return mail;
+	}
+
+	private String buildContentForNoCotationFoundMail(String day) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("<hr>");
+		stringBuilder.append("<h2> No cotation was found for day: " + day + "</h2>");
+
+		return stringBuilder.toString();
+	}
+
+	private String buildSubjectForNoCotationFoundMail() {
+		return Constants.MAIL_PROCESSING_SUBJECT_BASE_NO_COTATION;
 	}
 }

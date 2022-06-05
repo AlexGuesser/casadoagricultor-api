@@ -1,7 +1,6 @@
 package online.guessersoftware.casadoagricultorapi.webservice.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -49,8 +48,8 @@ public class Cotation extends BaseModel {
 	public Cotation() {
 	}
 
-	public Cotation(LocalDate fromDay, String classification, String type, String origin, String packaging, float communWeight, ProductAndVariety productAndVariety,
-			Price price, CotationFile cotationFile) {
+	public Cotation(LocalDate fromDay, String classification, String type, String origin, String packaging, float communWeight,
+			ProductAndVariety productAndVariety, Price price, CotationFile cotationFile) {
 		this.fromDay = fromDay;
 		this.classification = classification;
 		this.type = type;
