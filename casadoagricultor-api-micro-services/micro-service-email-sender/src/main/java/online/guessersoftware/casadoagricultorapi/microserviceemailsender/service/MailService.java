@@ -34,4 +34,9 @@ public class MailService {
 		emailSender.send(mail);
 	}
 
+	public boolean sendEmailByRequest(Mail mail) {
+		log.info("Sending mail");
+		return emailSender.send(mail);
+	}
+
 }
