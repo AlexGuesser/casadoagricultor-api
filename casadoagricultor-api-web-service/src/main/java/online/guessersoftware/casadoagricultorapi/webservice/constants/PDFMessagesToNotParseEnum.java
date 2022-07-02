@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum PDFMessagesToNotParse {
+public enum PDFMessagesToNotParseEnum {
 
 	TERAYDE("Teradyne Brasil -  www.teradynebrasil.com.br - Smart solutions on the web"), //
 	CEASA_CONTACT("www.ceasa.sc.gov.br - e-mail : ceasa@ceasa.sc.gov.br"), //
@@ -20,7 +20,7 @@ public enum PDFMessagesToNotParse {
 
 	private String text;
 
-	private PDFMessagesToNotParse(String text) {
+	private PDFMessagesToNotParseEnum(String text) {
 		this.text = text;
 	}
 
@@ -29,7 +29,7 @@ public enum PDFMessagesToNotParse {
 	}
 
 	public static boolean contains(String line) {
-		List<PDFMessagesToNotParse> enumList = Arrays.asList(PDFMessagesToNotParse.values());
+		List<PDFMessagesToNotParseEnum> enumList = Arrays.asList(PDFMessagesToNotParseEnum.values());
 		return enumList.stream().anyMatch(enumElement -> {
 			return StringUtils.equals(enumElement.getText(), line);
 		});

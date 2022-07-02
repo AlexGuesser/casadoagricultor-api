@@ -12,7 +12,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 import online.guessersoftware.casadoagricultorapi.common.constants.Constants;
-import online.guessersoftware.casadoagricultorapi.webservice.constants.PDFMessagesToNotParse;
+import online.guessersoftware.casadoagricultorapi.webservice.constants.PDFMessagesToNotParseEnum;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.PackagingListEnum;
 import online.guessersoftware.casadoagricultorapi.webservice.constants.TypeListEnum;
 import online.guessersoftware.casadoagricultorapi.webservice.valueobject.CotationValueObject;
@@ -32,7 +32,7 @@ public class PdfBoxTests {
 			String lines[] = pdfFileInText.split("\\n");
 			List<String> linesWithCotations = new ArrayList<String>();
 			for (String line : lines) {
-				if (PDFMessagesToNotParse.contains(line)) {
+				if (PDFMessagesToNotParseEnum.contains(line)) {
 					continue;
 				}
 				linesWithCotations.add(line);

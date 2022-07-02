@@ -187,6 +187,14 @@
 				<version>2.7.2</version>
 			</dependency>
 
+			<!-- https://mvnrepository.com/artifact/org.qunix/structure-maven-plugin -->
+			<dependency>
+				<groupId>org.qunix</groupId>
+				<artifactId>structure-maven-plugin</artifactId>
+				<version>0.0.2</version>
+			</dependency>
+
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -216,6 +224,29 @@
 							</goals>
 						</execution>
 					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.qunix</groupId>
+					<artifactId>structure-maven-plugin</artifactId>
+					<version>0.0.2</version>
+					<inherited>false</inherited>
+					<executions>
+						<execution>
+							<phase>compile</phase>
+							<goals>
+								<goal>modules</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<detailed>true</detailed>
+						<ignores>		
+							<ignore>target.*</ignore>
+							<ignore>\.settings.*</ignore>
+							<ignore>\.project.*</ignore>
+							<ignore>\.classpath.*</ignore>
+						</ignores>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
